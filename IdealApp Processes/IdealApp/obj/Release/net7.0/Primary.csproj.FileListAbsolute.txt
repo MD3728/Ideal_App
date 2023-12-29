@@ -1,0 +1,15 @@
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\IdealApp\bin\Release\net7.0\Primary.exe
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\IdealApp\bin\Release\net7.0\Primary.deps.json
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\IdealApp\bin\Release\net7.0\Primary.runtimeconfig.json
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\IdealApp\bin\Release\net7.0\Primary.dll
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\IdealApp\bin\Release\net7.0\Primary.pdb
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\IdealApp\obj\Release\net7.0\Primary.csproj.AssemblyReference.cache
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\IdealApp\obj\Release\net7.0\Primary.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\IdealApp\obj\Release\net7.0\Primary.AssemblyInfoInputs.cache
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\IdealApp\obj\Release\net7.0\Primary.AssemblyInfo.cs
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\IdealApp\obj\Release\net7.0\Primary.csproj.CoreCompileInputs.cache
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\IdealApp\obj\Release\net7.0\Primary.dll
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\IdealApp\obj\Release\net7.0\refint\Primary.dll
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\IdealApp\obj\Release\net7.0\Primary.pdb
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\IdealApp\obj\Release\net7.0\Primary.genruntimeconfig.cache
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\IdealApp\obj\Release\net7.0\ref\Primary.dll

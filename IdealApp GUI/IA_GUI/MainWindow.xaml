@@ -1,0 +1,943 @@
+﻿<Window x:Class="IA_GUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:IA_GUI"
+        mc:Ignorable="d"
+        x:Name="RootWindow"
+        Title="IdealApp" Height="800" Width="860" ResizeMode = "NoResize" Background="#FF5E7790" Icon="C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp GUI\IA_GUI\Icon1.ico">
+
+  <!-- Styling -->
+  <Window.Resources>
+    <!-- Special Rounded Buttons -->
+    <Style x:Key="RoundCornerBlue" TargetType="Button">
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+      <Setter Property="Padding" Value="1"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Grid x:Name="grid">
+              <Border x:Name="border" CornerRadius="6" BorderBrush="Black" BorderThickness="0.6" Background="#FFAABED6">
+                <!-- Possible Changes -->
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
+                </ContentPresenter>
+              </Border>
+            </Grid>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsPressed" Value="True">
+              </Trigger>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" TargetName="border" Value="#FFbee6fd"/>
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style x:Key="RoundCornerRed" TargetType="Button">
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+      <Setter Property="Padding" Value="1"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Grid x:Name="grid">
+              <Border x:Name="border" CornerRadius="6" BorderBrush="Black" BorderThickness="0.6" Background="Tomato">
+                <!-- Possible Changes -->
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
+                </ContentPresenter>
+              </Border>
+            </Grid>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsPressed" Value="True">
+              </Trigger>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" TargetName="border" Value="#FFbee6fd"/>
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style x:Key="RoundCornerGreen" TargetType="Button">
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+      <Setter Property="Padding" Value="1"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Grid x:Name="grid">
+              <Border x:Name="border" CornerRadius="6" BorderBrush="Black" BorderThickness="0.6" Background="LimeGreen">
+                <!-- Possible Changes -->
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
+                </ContentPresenter>
+              </Border>
+            </Grid>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsPressed" Value="True">
+              </Trigger>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" TargetName="border" Value="#FFbee6fd"/>
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style x:Key="TitleBarButton" TargetType="Button">
+      <!-- Top Bar Contents -->
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+      <Setter Property="FontSize" Value="45"/>
+      <Setter Property="FontFamily" Value="Arial"/>
+      <Setter Property="Padding" Value="1"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Grid x:Name="grid">
+              <Border x:Name="border" CornerRadius="15" BorderBrush="Black" BorderThickness="0.6" Background="DarkGray">
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
+                </ContentPresenter>
+              </Border>
+            </Grid>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" TargetName="border" Value="#FFbee6fd"/>
+              </Trigger>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Opacity" TargetName="grid" Value="0.25"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <!-- Toggle Buttons-->
+    <Style x:Key="NormalToggleButton" TargetType="ToggleButton">
+      <Setter Property="FontFamily" Value="Arial"/>
+      <Setter Property="FontSize" Value="16"/>
+      <Setter Property="Foreground" Value="Black"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="ToggleButton">
+            <Grid x:Name="grid">
+              <Border x:Name="border" CornerRadius="7" BorderBrush="Black" BorderThickness="0.6" Background="DarkGray">
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
+                </ContentPresenter>
+              </Border>
+            </Grid>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" TargetName="border" Value="LightGray"/>
+              </Trigger>
+              <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Opacity" TargetName="border" Value="1"/>
+                <Setter Property="Background" TargetName="border" Value="LimeGreen"/>
+              </Trigger>
+              <Trigger Property="IsChecked" Value="False">
+                <Setter Property="Opacity" TargetName="border" Value="1"/>
+                <Setter Property="Background" TargetName="border" Value="Tomato"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <!-- General Element Defaults -->
+    <Style TargetType="Label">
+      <Setter Property="FontFamily" Value="Arial"/>
+      <Setter Property="FontSize" Value="40"/>
+      <Setter Property="Panel.ZIndex" Value="2" />
+    </Style>
+
+    <Style TargetType="Button">
+      <Setter Property="FontFamily" Value="Arial"/>
+      <Setter Property="FontSize" Value="40"/>
+      <Setter Property="Panel.ZIndex" Value="2" />
+    </Style>
+
+    <Style TargetType="ToggleButton">
+      <Setter Property="FontFamily" Value="Arial"/>
+      <Setter Property="FontSize" Value="40"/>
+      <Setter Property="Panel.ZIndex" Value="2" />
+    </Style>
+
+    <Style TargetType="CheckBox">
+      <Setter Property="FontFamily" Value="Arial"/>
+      <Setter Property="FontSize" Value="40"/>
+      <Setter Property="Panel.ZIndex" Value="2" />
+    </Style>
+
+    <Style TargetType="TextBox">
+      <Setter Property="FontFamily" Value="Arial"/>
+      <Setter Property="FontSize" Value="20"/>
+      <Setter Property="Panel.ZIndex" Value="2" />
+    </Style>
+
+  </Window.Resources>
+
+  <!-- Main Grid and Subgrids -->
+  <Grid Margin="15" x:Name="total_grid" Background="#FF5E7790" >
+    <Grid.RowDefinitions>
+      <RowDefinition Height="100" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="100" />
+      <RowDefinition Height="100" />
+      <RowDefinition Height="100" />
+      <RowDefinition Height="100" />
+      <RowDefinition Height="100" />
+      <RowDefinition Height="100" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="100" />
+      <ColumnDefinition Width="100" />
+      <ColumnDefinition Width="100" />
+      <ColumnDefinition Width="100" />
+      <ColumnDefinition Width="100" />
+      <ColumnDefinition Width="100" />
+      <ColumnDefinition Width="100" />
+      <ColumnDefinition Width="100" />
+      <ColumnDefinition Width="100" />
+      <ColumnDefinition Width="100" />
+    </Grid.ColumnDefinitions>
+
+    <!-- Top Bar Content -->
+    <Rectangle x:Name="GlobalHeader" RadiusX="20" RadiusY="20"  Grid.ColumnSpan="9" HorizontalAlignment="Left" Height="140" VerticalAlignment="Top" Width="816" Fill="#EE7bd0c8" Margin="0,0,0,0" Grid.RowSpan="2" />
+    <Button x:Name="GlobalPlan" Style ="{DynamicResource TitleBarButton}" Background="DarkGray" Foreground="GhostWhite" Content="Plans" HorizontalAlignment="Left" Margin="22,14,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Height="110" Width="250" Click="loadMainPlanScreen" Grid.RowSpan="2" >
+    </Button>
+    <Button x:Name="GlobalStat" Style ="{DynamicResource TitleBarButton}" Background="DarkGray" Foreground="GhostWhite" Content="Stats" HorizontalAlignment="Left" Margin="82,14,0,0" VerticalAlignment="Top" Grid.ColumnSpan="4" Height="110" Width="250" Grid.Column="2" Click="loadStatsScreen" Grid.RowSpan="2">
+    </Button>
+    <Button x:Name="GlobalSetting" Style ="{DynamicResource TitleBarButton}" Background="DarkGray" Foreground="GhostWhite" Content="Settings" HorizontalAlignment="Left" Margin="42,14,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Height="110" Width="250" Grid.Column="5" Click="loadSettingsScreen" Grid.RowSpan="2">
+    </Button>
+
+    <!-- Grid on Plans -->
+    <Grid Margin="0,50,0,0" x:Name="plan_grid" Grid.Column = "0" Grid.Row ="1" Grid.RowSpan="12" Grid.ColumnSpan="10" Visibility="Collapsed" Panel.ZIndex ="2">
+      <Grid.RowDefinitions>
+        <!-- Max 12 Plans-->
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="100" />
+        <ColumnDefinition Width="50" />
+        <ColumnDefinition Width="117" />
+        <ColumnDefinition Width="117" />
+        <ColumnDefinition Width="118" />
+        <ColumnDefinition Width="100" />
+        <ColumnDefinition Width="100" />
+        <ColumnDefinition Width="100" />
+        <ColumnDefinition Width="100" />
+      </Grid.ColumnDefinitions>
+      <Rectangle x:Name="EntirePlan" RadiusX="20" RadiusY="20"  Grid.ColumnSpan="10" HorizontalAlignment="Left" Height="535" VerticalAlignment="Top" Width="815" Fill="LightBlue" Margin="0,0,0,0" Grid.RowSpan="17" />
+
+      <Rectangle x:Name="Wrapper1" RadiusX="8" RadiusY="8" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="10" Grid.RowSpan ="2" HorizontalAlignment="Left" Height="35" VerticalAlignment="Top" Width="797" Fill="#EE7bd0c8" Margin="10,7,10,10" />
+      <Rectangle x:Name="Wrapper2" RadiusX="8" RadiusY="8" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="10" Grid.RowSpan ="2" HorizontalAlignment="Left" Height="35" VerticalAlignment="Top" Width="797" Fill="#EE7bd0c8" Margin="10,7,10,10" />
+      <Rectangle x:Name="Wrapper3" RadiusX="8" RadiusY="8" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="10" Grid.RowSpan ="2" HorizontalAlignment="Left" Height="35" VerticalAlignment="Top" Width="797" Fill="#EE7bd0c8" Margin="10,7,10,10" />
+      <Rectangle x:Name="Wrapper4" RadiusX="8" RadiusY="8" Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="10" Grid.RowSpan ="2" HorizontalAlignment="Left" Height="35" VerticalAlignment="Top" Width="797" Fill="#EE7bd0c8" Margin="10,7,10,10" />
+      <Rectangle x:Name="Wrapper5" RadiusX="8" RadiusY="8" Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="10" Grid.RowSpan ="2" HorizontalAlignment="Left" Height="35" VerticalAlignment="Top" Width="797" Fill="#EE7bd0c8" Margin="10,7,10,10" />
+      <Rectangle x:Name="Wrapper6" RadiusX="8" RadiusY="8" Grid.Column="0" Grid.Row="10" Grid.ColumnSpan="10" Grid.RowSpan ="2" HorizontalAlignment="Left" Height="35" VerticalAlignment="Top" Width="797" Fill="#EE7bd0c8" Margin="10,7,10,10" />
+
+      <!-- Alternating Background -->
+      <Rectangle x:Name="backgroundPlan1" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="200" Height="32" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="8" Panel.ZIndex="3"/>
+
+      <!-- Column Header -->
+      <Label x:Name="planGlobalName" Foreground ="AliceBlue" Margin ="-80,-122,0,0" Content="Name:" HorizontalAlignment="Center" VerticalAlignment="Center" Width="140" Height="45" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="3" FontSize="24" />
+      <Label x:Name="planGlobalListing" Foreground ="AliceBlue" Margin ="-80,-122,0,0" Content="List Type:" HorizontalAlignment="Center" VerticalAlignment="Center" Width="140" Height="45" Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="2" FontSize="24" />
+      <Label x:Name="planGlobalKillType" Foreground ="AliceBlue" Margin ="-40,-122,0,0" Content="Action:" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="140" Height="45" Grid.Column="3" Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="2" FontSize="24"/>
+      <Label x:Name="planGlobalActive" Foreground ="AliceBlue" Margin ="-30,-122,0,0" Content="Active:" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="140" Height="45" Grid.Column="4" Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="2" FontSize="24"  />
+      <Label x:Name="planGlobalOption" Foreground ="AliceBlue" Margin ="-50,-122,0,0" Content="Options:" HorizontalAlignment="Center" VerticalAlignment="Center" Width="140" Height="45" Grid.Column="6" Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="2" FontSize="24" />
+
+      <!-- Plan Names -->
+      <Label x:Name="planName1" Content="Default Name" HorizontalAlignment="Left" Margin="20,8,0,0" VerticalAlignment="Top" Width="200" Height="32" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planName2" Content="Default Name" HorizontalAlignment="Left" Margin="20,8,0,0" VerticalAlignment="Top" Width="200" Height="32" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planName3" Content="Default Name" HorizontalAlignment="Left" Margin="20,8,0,0" VerticalAlignment="Top" Width="200" Height="32" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planName4" Content="Default Name" HorizontalAlignment="Left" Margin="20,8,0,0" VerticalAlignment="Top" Width="200" Height="32" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planName5" Content="Default Name" HorizontalAlignment="Left" Margin="20,8,0,0" VerticalAlignment="Top" Width="200" Height="32" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planName6" Content="Default Name" HorizontalAlignment="Left" Margin="20,8,0,0" VerticalAlignment="Top" Width="200" Height="32" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planName7" Content="Default Name" HorizontalAlignment="Left" Margin="20,8,0,0" VerticalAlignment="Top" Width="200" Height="32" Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planName8" Content="Default Name" HorizontalAlignment="Left" Margin="20,8,0,0" VerticalAlignment="Top" Width="200" Height="32" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planName9" Content="Default Name" HorizontalAlignment="Left" Margin="20,8,0,0" VerticalAlignment="Top" Width="200" Height="32" Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planName10" Content="Default Name" HorizontalAlignment="Left" Margin="20,8,0,0" VerticalAlignment="Top" Width="200" Height="32" Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planName11" Content="Default Name" HorizontalAlignment="Left" Margin="20,8,0,0" VerticalAlignment="Top" Width="200" Height="32" Grid.Column="0" Grid.Row="10" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planName12" Content="Default Name" HorizontalAlignment="Left" Margin="20,8,0,0" VerticalAlignment="Top" Width="200" Height="32" Grid.Column="0" Grid.Row="11" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+
+      <!-- Whitelisting Enabled -->
+      <Label x:Name="planWhitelist1" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planWhitelist2" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planWhitelist3" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="2" Grid.Row="2" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planWhitelist4" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="2" Grid.Row="3" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planWhitelist5" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="2" Grid.Row="4" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planWhitelist6" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="2" Grid.Row="5" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planWhitelist7" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="2" Grid.Row="6" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planWhitelist8" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="2" Grid.Row="7" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planWhitelist9" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="2" Grid.Row="8" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planWhitelist10" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="2" Grid.Row="9" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planWhitelist11" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="2" Grid.Row="10" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planWhitelist12" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="2" Grid.Row="11" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+
+      <!-- Firewall Enabled -->
+      <Label x:Name="planFirewall1" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planFirewall2" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="3" Grid.Row="1" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planFirewall3" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="3" Grid.Row="2" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planFirewall4" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="3" Grid.Row="3" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planFirewall5" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="3" Grid.Row="4" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planFirewall6" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="3" Grid.Row="5" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planFirewall7" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="3" Grid.Row="6" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planFirewall8" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="3" Grid.Row="7" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planFirewall9" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="3" Grid.Row="8" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planFirewall10" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="3" Grid.Row="9" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planFirewall11" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="3" Grid.Row="10" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planFirewall12" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="3" Grid.Row="11" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+
+      <!-- Active -->
+      <Label x:Name="planActive1" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="4" Grid.Row="0" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planActive2" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="4" Grid.Row="1" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planActive3" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="4" Grid.Row="2" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planActive4" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="4" Grid.Row="3" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planActive5" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="4" Grid.Row="4" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planActive6" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="4" Grid.Row="5" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planActive7" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="4" Grid.Row="6" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planActive8" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="4" Grid.Row="7" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planActive9" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="4" Grid.Row="8" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planActive10" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="4" Grid.Row="9" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planActive11" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="4" Grid.Row="10" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+      <Label x:Name="planActive12" Content="Yes/No" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="80" Height="32" Grid.Column="4" Grid.Row="11" Grid.ColumnSpan="4" FontSize="20" Panel.ZIndex="3"/>
+
+      <!-- Edit Buttons -->
+      <Button x:Name="planEdit1" Style = "{DynamicResource RoundCornerBlue}" Grid.Column="6" Grid.ColumnSpan="1" Grid.Row="0" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Click="promptUserProtection">Edit</Button>
+      <Button x:Name="planEdit2" Style = "{DynamicResource RoundCornerBlue}" Grid.Column="6" Grid.ColumnSpan="1" Grid.Row="1" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Click="promptUserProtection">Edit</Button>
+      <Button x:Name="planEdit3" Style = "{DynamicResource RoundCornerBlue}" Grid.Column="6" Grid.ColumnSpan="1" Grid.Row="2" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20"  Click="promptUserProtection">Edit</Button>
+      <Button x:Name="planEdit4" Style = "{DynamicResource RoundCornerBlue}" Grid.Column="6" Grid.ColumnSpan="1" Grid.Row="3" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20"  Click="promptUserProtection">Edit</Button>
+      <Button x:Name="planEdit5" Style = "{DynamicResource RoundCornerBlue}" Grid.Column="6" Grid.ColumnSpan="1" Grid.Row="4" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20"  Click="promptUserProtection">Edit</Button>
+      <Button x:Name="planEdit6" Style = "{DynamicResource RoundCornerBlue}" Grid.Column="6" Grid.ColumnSpan="1" Grid.Row="5" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20"  Click="promptUserProtection">Edit</Button>
+      <Button x:Name="planEdit7" Style = "{DynamicResource RoundCornerBlue}" Grid.Column="6" Grid.ColumnSpan="1" Grid.Row="6" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20"  Click="promptUserProtection">Edit</Button>
+      <Button x:Name="planEdit8" Style = "{DynamicResource RoundCornerBlue}" Grid.Column="6" Grid.ColumnSpan="1" Grid.Row="7" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20"  Click="promptUserProtection">Edit</Button>
+      <Button x:Name="planEdit9" Style = "{DynamicResource RoundCornerBlue}" Grid.Column="6" Grid.ColumnSpan="1" Grid.Row="8" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20"  Click="promptUserProtection">Edit</Button>
+      <Button x:Name="planEdit10" Style = "{DynamicResource RoundCornerBlue}" Grid.Column="6" Grid.ColumnSpan="1" Grid.Row="9" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20"  Click="promptUserProtection">Edit</Button>
+      <Button x:Name="planEdit11" Style = "{DynamicResource RoundCornerBlue}" Grid.Column="6" Grid.ColumnSpan="1" Grid.Row="10" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20"  Click="promptUserProtection">Edit</Button>
+      <Button x:Name="planEdit12" Style = "{DynamicResource RoundCornerBlue}" Grid.Column="6" Grid.ColumnSpan="1" Grid.Row="11" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20"  Click="promptUserProtection">Edit</Button>
+
+      <!-- Delete Buttons -->
+      <Button x:Name="planDelete1" Style = "{DynamicResource RoundCornerRed}" Grid.Column="7" Grid.ColumnSpan="1" Grid.Row="0" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Delete</Button>
+      <Button x:Name="planDelete2" Style = "{DynamicResource RoundCornerRed}" Grid.Column="7" Grid.ColumnSpan="1" Grid.Row="1" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Delete</Button>
+      <Button x:Name="planDelete3" Style = "{DynamicResource RoundCornerRed}" Grid.Column="7" Grid.ColumnSpan="1" Grid.Row="2" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Delete</Button>
+      <Button x:Name="planDelete4" Style = "{DynamicResource RoundCornerRed}" Grid.Column="7" Grid.ColumnSpan="1" Grid.Row="3" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Delete</Button>
+      <Button x:Name="planDelete5" Style = "{DynamicResource RoundCornerRed}" Grid.Column="7" Grid.ColumnSpan="1" Grid.Row="4" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Delete</Button>
+      <Button x:Name="planDelete6" Style = "{DynamicResource RoundCornerRed}" Grid.Column="7" Grid.ColumnSpan="1" Grid.Row="5" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Delete</Button>
+      <Button x:Name="planDelete7" Style = "{DynamicResource RoundCornerRed}" Grid.Column="7" Grid.ColumnSpan="1" Grid.Row="6" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Delete</Button>
+      <Button x:Name="planDelete8" Style = "{DynamicResource RoundCornerRed}" Grid.Column="7" Grid.ColumnSpan="1" Grid.Row="7" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Delete</Button>
+      <Button x:Name="planDelete9" Style = "{DynamicResource RoundCornerRed}" Grid.Column="7" Grid.ColumnSpan="1" Grid.Row="8" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Delete</Button>
+      <Button x:Name="planDelete10" Style = "{DynamicResource RoundCornerRed}" Grid.Column="7" Grid.ColumnSpan="1" Grid.Row="9" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Delete</Button>
+      <Button x:Name="planDelete11" Style = "{DynamicResource RoundCornerRed}" Grid.Column="7" Grid.ColumnSpan="1" Grid.Row="10" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Delete</Button>
+      <Button x:Name="planDelete12" Style = "{DynamicResource RoundCornerRed}" Grid.Column="7" Grid.ColumnSpan="1" Grid.Row="11" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Delete</Button>
+
+      <!-- New Plan Button (Only shows sometimes) -->
+      <Button x:Name="planCreate1" Style = "{DynamicResource RoundCornerGreen}"  Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="0" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="loadFirstPlanScreen">Create</Button>
+      <Button x:Name="planCreate2" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="1" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="loadFirstPlanScreen">Create</Button>
+      <Button x:Name="planCreate3" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="2" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="loadFirstPlanScreen">Create</Button>
+      <Button x:Name="planCreate4" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="3" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="loadFirstPlanScreen">Create</Button>
+      <Button x:Name="planCreate5" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="4" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="loadFirstPlanScreen">Create</Button>
+      <Button x:Name="planCreate6" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="5" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="loadFirstPlanScreen">Create</Button>
+      <Button x:Name="planCreate7" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="6" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="loadFirstPlanScreen">Create</Button>
+      <Button x:Name="planCreate8" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="7" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="loadFirstPlanScreen">Create</Button>
+      <Button x:Name="planCreate9" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="8" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="loadFirstPlanScreen">Create</Button>
+      <Button x:Name="planCreate10" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="9" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="loadFirstPlanScreen">Create</Button>
+      <Button x:Name="planCreate11" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="10" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="loadFirstPlanScreen">Create</Button>
+      <Button x:Name="planCreate12" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="11" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="loadFirstPlanScreen">Create</Button>
+
+      <!-- Start Button (Only shows sometimes) -->
+      <Button x:Name="planStart1" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="0" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="startSelectedPlan">Start</Button>
+      <Button x:Name="planStart2" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="1" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="startSelectedPlan">Start</Button>
+      <Button x:Name="planStart3" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="2" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="startSelectedPlan">Start</Button>
+      <Button x:Name="planStart4" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="3" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="startSelectedPlan">Start</Button>
+      <Button x:Name="planStart5" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="4" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="startSelectedPlan">Start</Button>
+      <Button x:Name="planStart6" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="5" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="startSelectedPlan">Start</Button>
+      <Button x:Name="planStart7" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="6" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="startSelectedPlan">Start</Button>
+      <Button x:Name="planStart8" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="7" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="startSelectedPlan">Start</Button>
+      <Button x:Name="planStart9" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="8" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="startSelectedPlan">Start</Button>
+      <Button x:Name="planStart10" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="9" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="startSelectedPlan"></Button>
+      <Button x:Name="planStart11" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="10" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="startSelectedPlan">Start</Button>
+      <Button x:Name="planStart12" Style = "{DynamicResource RoundCornerGreen}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="11" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="LimeGreen" Click="startSelectedPlan">Start</Button>
+
+      <!-- Stop Button (Only shows sometimes) -->
+      <Button x:Name="planStop1" Style = "{DynamicResource RoundCornerRed}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="0" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Stop</Button>
+      <Button x:Name="planStop2" Style = "{DynamicResource RoundCornerRed}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="1" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Stop</Button>
+      <Button x:Name="planStop3" Style = "{DynamicResource RoundCornerRed}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="2" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Stop</Button>
+      <Button x:Name="planStop4" Style = "{DynamicResource RoundCornerRed}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="3" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Stop</Button>
+      <Button x:Name="planStop5" Style = "{DynamicResource RoundCornerRed}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="4" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Stop</Button>
+      <Button x:Name="planStop6" Style = "{DynamicResource RoundCornerRed}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="5" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Stop</Button>
+      <Button x:Name="planStop7" Style = "{DynamicResource RoundCornerRed}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="6" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Stop</Button>
+      <Button x:Name="planStop8" Style = "{DynamicResource RoundCornerRed}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="7" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Stop</Button>
+      <Button x:Name="planStop9" Style = "{DynamicResource RoundCornerRed}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="8" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Stop</Button>
+      <Button x:Name="planStop10" Style = "{DynamicResource RoundCornerRed}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="9" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Stop</Button>
+      <Button x:Name="planStop11" Style = "{DynamicResource RoundCornerRed}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="10" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Stop</Button>
+      <Button x:Name="planStop12" Style = "{DynamicResource RoundCornerRed}" Grid.Column="5" Grid.ColumnSpan="1" Grid.Row="11" Grid.RowSpan="1" Margin="5,10,5,0" FontSize="20" Background="Tomato" Click="promptUserProtection">Stop</Button>
+
+    </Grid>
+
+    <!-- Grid on Settings -->
+    <Grid x:Name="settings_grid" Margin="10,50,0,0"  Grid.Column = "0" Grid.Row ="1" Grid.RowSpan="13" Grid.ColumnSpan="13" Visibility="Collapsed">
+      <Grid.RowDefinitions>
+        <!-- Max 24 (Technically 26) Options  2*12 (or 13 layout)-->
+        <RowDefinition Height="50" />
+        <RowDefinition Height="50" />
+        <RowDefinition Height="50" />
+        <RowDefinition Height="50" />
+        <RowDefinition Height="50" />
+        <RowDefinition Height="50" />
+        <RowDefinition Height="50" />
+        <RowDefinition Height="50" />
+        <RowDefinition Height="50" />
+        <RowDefinition Height="50" />
+        <RowDefinition Height="50" />
+        <RowDefinition Height="50" />
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="70" />
+        <ColumnDefinition Width="400" />
+        <ColumnDefinition Width="200" />
+        <ColumnDefinition Width="50" />
+        <ColumnDefinition Width="200" />
+        <ColumnDefinition Width="100" />
+        <ColumnDefinition Width="80" />
+      </Grid.ColumnDefinitions>
+
+      <Rectangle x:Name="SettingsBackground" RadiusX="30" RadiusY="30"  Grid.ColumnSpan="9" HorizontalAlignment="Left" Height="585" VerticalAlignment="Top" Width="800" Fill="LightBlue" Margin="0,0,0,0" Grid.RowSpan="17" />
+      <Label x:Name ="settingMainLbl" Margin ="-120,0,0,0" Content="Settings" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan ="2" Grid.RowSpan="1" FontSize="30" HorizontalAlignment="Left" VerticalAlignment="Center" />
+      <!--<Label x:Name="lastUpdate"/>-->
+      <!-- TBD -->
+      <!-- Setting Values -->
+      <Label x:Name ="settingLabel1" Content="Setting 1" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="1" />
+      <Label x:Name ="settingLabel2" Content="Setting 1" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="1" />
+      <Label x:Name ="settingLabel3" Content="Setting 1" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="1" />
+      <Label x:Name ="settingLabel4" Content="Setting 1" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="1" />
+      <Label x:Name ="settingLabel5" Content="Setting 1" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="1" />
+      <Label x:Name ="settingLabel6" Content="Setting 1" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="1" />
+      <Label x:Name ="settingLabel7" Content="Setting 1" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="1" />
+      <Label x:Name ="settingLabel8" Margin ="-10,0,0,0" Content="Setting 1" Grid.Column="1" Grid.Row="8" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="1" />
+      <Label x:Name ="settingLabel9" Margin ="-10,0,0,0" Content="Setting 1" Grid.Column="1" Grid.Row="9" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="1" />
+
+      <!--<Label x:Name ="settingLabel10" Content="Setting 1" Grid.Column="4" Grid.Row="1" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" />
+      <Label x:Name ="settingLabel11" Content="Setting 1" Grid.Column="4" Grid.Row="2" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" />
+      <Label x:Name ="settingLabel12" Content="Setting 1" Grid.Column="4" Grid.Row="3" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" />
+      <Label x:Name ="settingLabel13" Content="Setting 1" Grid.Column="4" Grid.Row="4" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" />
+      <Label x:Name ="settingLabel14" Content="Setting 1" Grid.Column="4" Grid.Row="5" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" />
+      <Label x:Name ="settingLabel15" Content="Setting 1" Grid.Column="4" Grid.Row="6" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" />
+      <Label x:Name ="settingLabel16" Content="Setting 1" Grid.Column="4" Grid.Row="7" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" />
+      <Label x:Name ="settingLabel17" Content="Setting 1" Grid.Column="4" Grid.Row="8" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" />
+      <Label x:Name ="settingLabel18" Content="Setting 1" Grid.Column="4" Grid.Row="9" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" />-->
+
+      <!-- Settings On/Off Buttons 12 * 2 for now-->
+      <!-- Left Side -->
+      <ToggleButton x:Name="settingToggle1" Content="Off" Checked = "HandleCheck" Unchecked = "HandleUnchecked" Margin="7"  Width = "85" HorizontalAlignment = "Center"  
+                    Grid.Column="2" Grid.Row="1" Grid.ColumnSpan ="1" Grid.RowSpan="1" Panel.ZIndex="1" Style="{DynamicResource NormalToggleButton}"  />
+      <ToggleButton x:Name="settingToggle2" Content="Off" Checked = "HandleCheck" Unchecked = "HandleUnchecked" Margin="7"  Width = "85" HorizontalAlignment = "Center" 
+                    Grid.Column="2" Grid.Row="2" Grid.ColumnSpan ="1" Grid.RowSpan="1" Panel.ZIndex="1" Style="{DynamicResource NormalToggleButton}"  />
+      <ToggleButton x:Name="settingToggle3" Content="Off" Checked = "HandleCheck" Unchecked = "HandleUnchecked" Margin="7"  Width = "85" HorizontalAlignment = "Center" 
+                    Grid.Column="2" Grid.Row="3" Grid.ColumnSpan ="1" Grid.RowSpan="1" Panel.ZIndex="1" Style="{DynamicResource NormalToggleButton}"  />
+      <ToggleButton x:Name="settingToggle4" Content="Off" Checked = "HandleCheck" Unchecked = "HandleUnchecked" Margin="7"  Width = "85" HorizontalAlignment = "Center" 
+                    Grid.Column="2" Grid.Row="4" Grid.ColumnSpan ="1" Grid.RowSpan="1" Panel.ZIndex="1" Style="{DynamicResource NormalToggleButton}"  />
+      <ToggleButton x:Name="settingToggle5" Content="Off" Checked = "HandleCheck" Unchecked = "HandleUnchecked" Margin="7"  Width = "85" HorizontalAlignment = "Center" 
+                    Grid.Column="2" Grid.Row="5" Grid.ColumnSpan ="1" Grid.RowSpan="1" Panel.ZIndex="1" Style="{DynamicResource NormalToggleButton}"  />
+      <ToggleButton x:Name="settingToggle6" Content="Off" Checked = "HandleCheck" Unchecked = "HandleUnchecked" Margin="7"  Width = "85" HorizontalAlignment = "Center" 
+                    Grid.Column="2" Grid.Row="6" Grid.ColumnSpan ="1" Grid.RowSpan="1" Panel.ZIndex="1" Style="{DynamicResource NormalToggleButton}"  />
+      <ToggleButton x:Name="settingToggle7" Content="Off" Checked = "HandleCheck" Unchecked = "HandleUnchecked" Margin="7"  Width = "85" HorizontalAlignment = "Center" 
+                    Grid.Column="2" Grid.Row="7" Grid.ColumnSpan ="1" Grid.RowSpan="1" Panel.ZIndex="1" Style="{DynamicResource NormalToggleButton}"  />
+      <ToggleButton x:Name="settingToggle8" Content="Off" Checked = "HandleCheck" Unchecked = "HandleUnchecked" Margin="7"  Width = "85" HorizontalAlignment = "Center" 
+                    Grid.Column="2" Grid.Row="8" Grid.ColumnSpan ="1" Grid.RowSpan="1" Panel.ZIndex="1" Style="{DynamicResource NormalToggleButton}"  />
+      <ToggleButton x:Name="settingToggle9" Content="Off" Checked = "HandleCheck" Unchecked = "HandleUnchecked" Margin="7"  Width = "85" HorizontalAlignment = "Center" 
+                    Grid.Column="2" Grid.Row="9" Grid.ColumnSpan ="1" Grid.RowSpan="1" Panel.ZIndex="1" Style="{DynamicResource NormalToggleButton}" />
+
+      <!-- Right Side -->
+      <!--<ToggleButton x:Name="settingToggle10" Content="Off" Checked = "HandleCheck" Unchecked = "HandleUnchecked" Margin="7"  Width = "85" HorizontalAlignment = "Center" 
+                    Grid.Column="5" Grid.Row="1" Grid.ColumnSpan ="1" Grid.RowSpan="1"  />
+      <ToggleButton x:Name="settingToggle11" Content="Off" Checked = "HandleCheck" Unchecked = "HandleUnchecked" Margin="7"  Width = "85" HorizontalAlignment = "Center"  
+                    Grid.Column="5" Grid.Row="2" Grid.ColumnSpan ="1" Grid.RowSpan="1"  />
+      <ToggleButton x:Name="settingToggle12" Content="Off" Checked = "HandleCheck" Unchecked = "HandleUnchecked" Margin="7"  Width = "85" HorizontalAlignment = "Center" 
+                    Grid.Column="5" Grid.Row="3" Grid.ColumnSpan ="1" Grid.RowSpan="1"  />
+      <ToggleButton x:Name="settingToggle13" Content="Off" Checked = "HandleCheck" Unchecked = "HandleUnchecked" Margin="7"  Width = "85" HorizontalAlignment = "Center" 
+                    Grid.Column="5" Grid.Row="4" Grid.ColumnSpan ="1" Grid.RowSpan="1"  />
+      <ToggleButton x:Name="settingToggle14" Content="Off" Checked = "HandleCheck" Unchecked = "HandleUnchecked" Margin="7"  Width = "85" HorizontalAlignment = "Center" 
+                    Grid.Column="5" Grid.Row="5" Grid.ColumnSpan ="1" Grid.RowSpan="1"  />
+      <ToggleButton x:Name="settingToggle15" Content="Off" Checked = "HandleCheck" Unchecked = "HandleUnchecked" Margin="7"  Width = "85" HorizontalAlignment = "Center" 
+                    Grid.Column="5" Grid.Row="6" Grid.ColumnSpan ="1" Grid.RowSpan="1"  />
+      <ToggleButton x:Name="settingToggle16" Content="Off" Checked = "HandleCheck" Unchecked = "HandleUnchecked" Margin="7"  Width = "85" HorizontalAlignment = "Center" 
+                    Grid.Column="5" Grid.Row="7" Grid.ColumnSpan ="1" Grid.RowSpan="1"  />
+      <ToggleButton x:Name="settingToggle17" Content="Off" Checked = "HandleCheck" Unchecked = "HandleUnchecked" Margin="7"  Width = "85" HorizontalAlignment = "Center" 
+                    Grid.Column="5" Grid.Row="8" Grid.ColumnSpan ="1" Grid.RowSpan="1"  />
+      <ToggleButton x:Name="settingToggle18" Content="Off" Checked = "HandleCheck" Unchecked = "HandleUnchecked" Margin="7"  Width = "85" HorizontalAlignment = "Center" 
+                    Grid.Column="5" Grid.Row="9" Grid.ColumnSpan ="1" Grid.RowSpan="1"  />-->
+
+      <Rectangle x:Name="SettingsWrapper1" RadiusX="8" RadiusY="8" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="10" Grid.RowSpan ="2" HorizontalAlignment="Left" Height="45" VerticalAlignment="Top" Width="780" Fill="#EE7bd0c8" Margin="10,3,10,10" Panel.ZIndex="0" />
+      <Rectangle x:Name="SettingsWrapper2" RadiusX="8" RadiusY="8" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="10" Grid.RowSpan ="2" HorizontalAlignment="Left" Height="45" VerticalAlignment="Top" Width="780" Fill="#EE7bd0c8" Margin="10,3,10,10" Panel.ZIndex="0" />
+      <Rectangle x:Name="SettingsWrapper3" RadiusX="8" RadiusY="8" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="10" Grid.RowSpan ="2" HorizontalAlignment="Left" Height="45" VerticalAlignment="Top" Width="780" Fill="#EE7bd0c8" Margin="10,3,10,10" Panel.ZIndex="0" />
+      <Rectangle x:Name="SettingsWrapper4" RadiusX="8" RadiusY="8" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="10" Grid.RowSpan ="2" HorizontalAlignment="Left" Height="45" VerticalAlignment="Top" Width="780" Fill="#EE7bd0c8" Margin="10,3,10,10" Panel.ZIndex="0" />
+      <!--<Rectangle x:Name="SettingsWrapper5" RadiusX="8" RadiusY="8" Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="10" Grid.RowSpan ="2" HorizontalAlignment="Left" Height="35" VerticalAlignment="Top" Width="780" Fill="#EE7bd0c8" Margin="10,3,10,10" Panel.ZIndex="0" />-->
+
+
+    </Grid>
+
+    <!-- Grid on Statistics -->
+    <Grid x:Name="stats_grid" Margin="10,50,0,0" Grid.Column = "0" Grid.Row ="1" Grid.RowSpan="9" Grid.ColumnSpan="10" Visibility="Collapsed">
+      <Grid.RowDefinitions>
+        <!-- Max 24 (Technically 26) Options  2*12 (or 13 layout)-->
+        <RowDefinition Height="80" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <!-- Empty -->
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="50" />
+        <ColumnDefinition Width="170" />
+        <ColumnDefinition Width="350" />
+        <ColumnDefinition Width="120" />
+        <ColumnDefinition Width="70" />
+        <ColumnDefinition Width="50" />
+      </Grid.ColumnDefinitions>
+      <Rectangle x:Name="StatsBackground" RadiusX="30" RadiusY="30"  Grid.ColumnSpan="9" HorizontalAlignment="Left" Height="585" VerticalAlignment="Top" Width="800" Fill="LightBlue" Margin="0,0,0,0" Grid.RowSpan="17" />
+      <!-- Label At Top -->
+      <Label x:Name ="statTimeLabel" Content="Time Period:" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" />
+      <ComboBox x:Name="statTimeSelect" SelectionChanged = "changeConfigurationStat" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <ComboBoxItem x:Name="timeChoice1" >Current Day</ComboBoxItem>
+        <ComboBoxItem x:Name="timeChoice2" >Entire Week</ComboBoxItem>
+      </ComboBox>
+      <Button x:Name="statFullReset" Style="{DynamicResource RoundCornerRed}" Width ="100" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="1" Margin="0,0,0,0" FontSize="20" Background="Tomato" HorizontalAlignment="Right" VerticalAlignment="Center" Click="resetAllStat">Reset All</Button>
+
+      <!-- Top 15 Times will show in the labels-->
+      <Label x:Name ="statName1" Content="App Name 1" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statName2" Content="App Name 1" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statName3" Content="App Name 1" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statName4" Content="App Name 1" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statName5" Content="App Name 1" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statName6" Content="App Name 1" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statName7" Content="App Name 1" Grid.Column="1" Grid.Row="7" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statName8" Content="App Name 1" Grid.Column="1" Grid.Row="8" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statName9" Content="App Name 1" Grid.Column="1" Grid.Row="9" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statName10" Content="App Name 1" Grid.Column="1" Grid.Row="10" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statName11" Content="App Name 1" Grid.Column="1" Grid.Row="11" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+
+      <Label x:Name ="statPath1" Content="App Path 1" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statPath2" Content="App Path 1" Grid.Column="2" Grid.Row="2" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statPath3" Content="App Path 1" Grid.Column="2" Grid.Row="3" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statPath4" Content="App Path 1" Grid.Column="2" Grid.Row="4" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statPath5" Content="App Path 1" Grid.Column="2" Grid.Row="5" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statPath6" Content="App Path 1" Grid.Column="2" Grid.Row="6" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statPath7" Content="App Path 1" Grid.Column="2" Grid.Row="7" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statPath8" Content="App Path 1" Grid.Column="2" Grid.Row="8" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statPath9" Content="App Path 1" Grid.Column="2" Grid.Row="9" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statPath10" Content="App Path 1" Grid.Column="2" Grid.Row="10" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statPath11" Content="App Path 1" Grid.Column="2" Grid.Row="11" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+
+      <Label x:Name ="statTime1" Content="Time 1" Grid.Column="3" Grid.Row="1" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statTime2" Content="Time 1" Grid.Column="3" Grid.Row="2" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statTime3" Content="Time 1" Grid.Column="3" Grid.Row="3" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statTime4" Content="Time 1" Grid.Column="3" Grid.Row="4" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statTime5" Content="Time 1" Grid.Column="3" Grid.Row="5" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statTime6" Content="Time 1" Grid.Column="3" Grid.Row="6" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statTime7" Content="Time 1" Grid.Column="3" Grid.Row="7" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statTime8" Content="Time 1" Grid.Column="3" Grid.Row="8" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statTime9" Content="Time 1" Grid.Column="3" Grid.Row="9" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statTime10" Content="Time 1" Grid.Column="3" Grid.Row="10" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+      <Label x:Name ="statTime11" Content="Time 1" Grid.Column="3" Grid.Row="11" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="2"/>
+
+      <Button x:Name="statReset1" Style="{DynamicResource RoundCornerRed}" Width ="65" Grid.Column="4" Grid.ColumnSpan="1" Grid.Row="1" Grid.RowSpan="1" Margin="0,0,0,0" FontSize="20" Background="Tomato" HorizontalAlignment="Center" VerticalAlignment="Center" Click="deleteCStat" Panel.ZIndex="2">Reset</Button>
+      <Button x:Name="statReset2" Style="{DynamicResource RoundCornerRed}" Width ="65" Grid.Column="4" Grid.ColumnSpan="1" Grid.Row="2" Grid.RowSpan="1" Margin="0,0,0,0" FontSize="20" Background="Tomato" HorizontalAlignment="Center" VerticalAlignment="Center" Click="deleteCStat" Panel.ZIndex="2">Reset</Button>
+      <Button x:Name="statReset3" Style="{DynamicResource RoundCornerRed}" Width ="65" Grid.Column="4" Grid.ColumnSpan="1" Grid.Row="3" Grid.RowSpan="1" Margin="0,0,0,0" FontSize="20" Background="Tomato" HorizontalAlignment="Center" VerticalAlignment="Center" Click="deleteCStat" Panel.ZIndex="2">Reset</Button>
+      <Button x:Name="statReset4" Style="{DynamicResource RoundCornerRed}" Width ="65" Grid.Column="4" Grid.ColumnSpan="1" Grid.Row="4" Grid.RowSpan="1" Margin="0,0,0,0" FontSize="20" Background="Tomato" HorizontalAlignment="Center" VerticalAlignment="Center" Click="deleteCStat" Panel.ZIndex="2">Reset</Button>
+      <Button x:Name="statReset5" Style="{DynamicResource RoundCornerRed}" Width ="65" Grid.Column="4" Grid.ColumnSpan="1" Grid.Row="5" Grid.RowSpan="1" Margin="0,0,0,0" FontSize="20" Background="Tomato" HorizontalAlignment="Center" VerticalAlignment="Center" Click="deleteCStat" Panel.ZIndex="2">Reset</Button>
+      <Button x:Name="statReset6" Style="{DynamicResource RoundCornerRed}" Width ="65" Grid.Column="4" Grid.ColumnSpan="1" Grid.Row="6" Grid.RowSpan="1" Margin="0,0,0,0" FontSize="20" Background="Tomato" HorizontalAlignment="Center" VerticalAlignment="Center" Click="deleteCStat" Panel.ZIndex="2">Reset</Button>
+      <Button x:Name="statReset7" Style="{DynamicResource RoundCornerRed}" Width ="65" Grid.Column="4" Grid.ColumnSpan="1" Grid.Row="7" Grid.RowSpan="1" Margin="0,0,0,0" FontSize="20" Background="Tomato" HorizontalAlignment="Center" VerticalAlignment="Center" Click="deleteCStat" Panel.ZIndex="2">Reset</Button>
+      <Button x:Name="statReset8" Style="{DynamicResource RoundCornerRed}" Width ="65" Grid.Column="4" Grid.ColumnSpan="1" Grid.Row="8" Grid.RowSpan="1" Margin="0,0,0,0" FontSize="20" Background="Tomato" HorizontalAlignment="Center" VerticalAlignment="Center" Click="deleteCStat" Panel.ZIndex="2">Reset</Button>
+      <Button x:Name="statReset9" Style="{DynamicResource RoundCornerRed}" Width ="65" Grid.Column="4" Grid.ColumnSpan="1" Grid.Row="9" Grid.RowSpan="1" Margin="0,0,0,0" FontSize="20" Background="Tomato" HorizontalAlignment="Center" VerticalAlignment="Center" Click="deleteCStat" Panel.ZIndex="2">Reset</Button>
+      <Button x:Name="statReset10" Style="{DynamicResource RoundCornerRed}" Width ="65" Grid.Column="4" Grid.ColumnSpan="1" Grid.Row="10" Grid.RowSpan="1" Margin="0,0,0,0" FontSize="20" Background="Tomato" HorizontalAlignment="Center" VerticalAlignment="Center" Click="deleteCStat" Panel.ZIndex="2">Reset</Button>
+      <Button x:Name="statReset11" Style="{DynamicResource RoundCornerRed}" Width ="65" Grid.Column="4" Grid.ColumnSpan="1" Grid.Row="11" Grid.RowSpan="1" Margin="0,0,0,0" FontSize="20" Background="Tomato" HorizontalAlignment="Center" VerticalAlignment="Center" Click="deleteCStat" Panel.ZIndex="2">Reset</Button>
+
+      <Rectangle x:Name="StatWrapper1" RadiusX="8" RadiusY="8" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="10" Grid.RowSpan ="2" HorizontalAlignment="Left" Height="35" VerticalAlignment="Top" Width="780" Fill="#EE7bd0c8" Margin="10,3,10,10" Panel.ZIndex="0" />
+      <Rectangle x:Name="StatWrapper2" RadiusX="8" RadiusY="8" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="10" Grid.RowSpan ="2" HorizontalAlignment="Left" Height="35" VerticalAlignment="Top" Width="780" Fill="#EE7bd0c8" Margin="10,3,10,10" Panel.ZIndex="0" />
+      <Rectangle x:Name="StatWrapper3" RadiusX="8" RadiusY="8" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="10" Grid.RowSpan ="2" HorizontalAlignment="Left" Height="35" VerticalAlignment="Top" Width="780" Fill="#EE7bd0c8" Margin="10,3,10,10" Panel.ZIndex="0" />
+      <Rectangle x:Name="StatWrapper4" RadiusX="8" RadiusY="8" Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="10" Grid.RowSpan ="2" HorizontalAlignment="Left" Height="35" VerticalAlignment="Top" Width="780" Fill="#EE7bd0c8" Margin="10,3,10,10" Panel.ZIndex="0" />
+      <Rectangle x:Name="StatWrapper5" RadiusX="8" RadiusY="8" Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="10" Grid.RowSpan ="2" HorizontalAlignment="Left" Height="35" VerticalAlignment="Top" Width="780" Fill="#EE7bd0c8" Margin="10,3,10,10" Panel.ZIndex="0" />
+      <Rectangle x:Name="StatWrapper6" RadiusX="8" RadiusY="8" Grid.Column="0" Grid.Row="11" Grid.ColumnSpan="10" Grid.RowSpan ="2" HorizontalAlignment="Left" Height="35" VerticalAlignment="Top" Width="780" Fill="#EE7bd0c8" Margin="10,3,10,10" Panel.ZIndex="0" />
+
+    </Grid>
+
+    <!-- Security Prompt: Password/Char Prompt -->
+    <Grid x:Name="password_grid" Margin="10,50,0,0" Grid.Column = "0" Grid.Row ="1" Grid.RowSpan="9" Grid.ColumnSpan="10" Visibility="Collapsed">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="100" />
+        <RowDefinition Height="100" />
+        <RowDefinition Height="100" />
+        <RowDefinition Height="100" />
+        <RowDefinition Height="100" />
+        <RowDefinition Height="100" />
+        <RowDefinition Height="100" />
+        <RowDefinition Height="100" />
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="100" />
+        <ColumnDefinition Width="100" />
+        <ColumnDefinition Width="100" />
+        <ColumnDefinition Width="100" />
+        <ColumnDefinition Width="100" />
+        <ColumnDefinition Width="100" />
+        <ColumnDefinition Width="100" />
+        <ColumnDefinition Width="100" />
+      </Grid.ColumnDefinitions>
+      <Label x:Name="TLabel" Margin ="20,-80,0,0" FontSize="20" Foreground="Black" Grid.Column="2" Grid.ColumnSpan="4" Grid.Row="1" Grid.RowSpan="4" Panel.ZIndex="2" />
+      <PasswordBox x:Name="PasswordInput" Height="40" FontSize="30" Width="500" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="6" Panel.ZIndex="2"/>
+      <Button x:Name="PasswordSubmit" Style ="{DynamicResource RoundCornerBlue}" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="1" Grid.RowSpan="4" Margin="0,20,0,0" Width="100" Height = "50" FontSize="24" Panel.ZIndex="2" >Check</Button>
+      <Button x:Name="PasswordCancel" Style ="{DynamicResource RoundCornerBlue}" Grid.Column="4" Grid.ColumnSpan="2" Grid.Row="1" Grid.RowSpan="4" Margin="0,20,0,0" Width="100" Height = "50" FontSize="24" Click="loadMainPlanScreen" Panel.ZIndex="2" >Cancel</Button>
+      <Rectangle x:Name="PasswordWrapper1" Margin="-102,0,0,0" RadiusX="8" RadiusY="8" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="7" Grid.RowSpan="9" VerticalAlignment="Top" HorizontalAlignment="Center" Height="370" Width="600" Fill="#EE7bd0c8" Panel.ZIndex="0" />
+    </Grid>
+
+    <!-- Security Prompt: Total Block Prompt -->
+    <Grid x:Name="blocked_grid" Margin="10,50,0,0" Grid.Column = "0" Grid.Row ="1" Grid.RowSpan="9" Grid.ColumnSpan="10" Visibility="Collapsed">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="100" />
+        <RowDefinition Height="100" />
+        <RowDefinition Height="100" />
+        <RowDefinition Height="100" />
+        <RowDefinition Height="100" />
+        <RowDefinition Height="100" />
+        <RowDefinition Height="100" />
+        <RowDefinition Height="100" />
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="100" />
+        <ColumnDefinition Width="100" />
+        <ColumnDefinition Width="100" />
+        <ColumnDefinition Width="100" />
+        <ColumnDefinition Width="100" />
+        <ColumnDefinition Width="100" />
+        <ColumnDefinition Width="100" />
+        <ColumnDefinition Width="100" />
+      </Grid.ColumnDefinitions>
+      <Label x:Name="BlockLabel" Margin ="50,20,50,0" FontSize="30" Foreground="Black" Grid.Column="1" Grid.ColumnSpan="6" Grid.RowSpan="5" Panel.ZIndex="2" Content="You cannot view ? until all &#x0a;plans are not active or disabled" />
+      <Button x:Name="ForceBack" Style ="{DynamicResource RoundCornerBlue}" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="1" Grid.RowSpan="4" Margin="10,20,0,0" Width="100" Height = "50" FontSize="24" Click="loadMainPlanScreen" Panel.ZIndex="2">Back</Button>
+      <Rectangle x:Name="ForceWrapper1" Margin="-102,0,0,0" RadiusX="8" RadiusY="8" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="7" Grid.RowSpan="9" VerticalAlignment="Top" HorizontalAlignment="Center" Height="370" Width="600" Fill="#EE7bd0c8" Panel.ZIndex="0" />
+    </Grid>
+
+    <!-- Within Plan Editor, Screen 1: Protection , Method to Kill, Basic Parameters  -->
+    <Grid x:Name="plan_grid_1" Margin="10,50,0,0" Grid.Column = "0" Grid.Row ="1" Grid.RowSpan="9" Grid.ColumnSpan="10" Visibility="Collapsed">
+      <Grid.RowDefinitions>
+        <!-- Max 24 (Technically 26) Options  2*12 (or 13 layout)-->
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <RowDefinition Height="40" />
+        <!-- Empty -->
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="50" />
+        <ColumnDefinition Width="150" />
+        <ColumnDefinition Width="250" />
+        <ColumnDefinition Width="150" />
+        <ColumnDefinition Width="150" />
+        <ColumnDefinition Width="50" />
+      </Grid.ColumnDefinitions>
+      <Rectangle x:Name="Plan1Background" RadiusX="30" RadiusY="30"  Grid.ColumnSpan="9" HorizontalAlignment="Left" Height="540" VerticalAlignment="Top" Width="797" Fill="LightBlue" Margin="0,0,0,0" Grid.RowSpan="17" />
+
+      <!-- Kill Methods-->
+      <Label x:Name ="killSelectLabel" Panel.ZIndex="2" Content="Enforcement Method:" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan ="2" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" />
+      <ComboBox x:Name="killSelect" Panel.ZIndex="2" Width="145" Grid.Column="2" Grid.Row="5" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" SelectedIndex="{Binding returnTempPlanCache.enforcementMethod, ElementName=RootWindow}">
+        <ComboBoxItem x:Name="killSelect2" IsSelected="True">Kill Application</ComboBoxItem>
+        <ComboBoxItem x:Name="defaultKillSelect">Block in Firewall</ComboBoxItem>
+      </ComboBox>
+
+      <!-- Protection Type -->
+      <Label x:Name ="protectSelectLabel" Panel.ZIndex="2" Content="Protection Type:" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan ="2" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" />
+      <ComboBox x:Name="protectSelect" Panel.ZIndex="2" Width="145" SelectionChanged = "changeConfigurationProtection" Grid.Column="2" Grid.Row="6" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" SelectedIndex="{Binding returnTempPlanCache.protectionActiveType, ElementName=RootWindow}" >
+        <ComboBoxItem >No Protection</ComboBoxItem>
+        <ComboBoxItem x:Name="defaultProtectSelect">Delay</ComboBoxItem>
+        <ComboBoxItem x:Name="protectSelect2">Password</ComboBoxItem>
+        <ComboBoxItem x:Name="protectSelect3">Random Characters</ComboBoxItem>
+        <ComboBoxItem x:Name="protectSelect4">Forced (No Access While Active)</ComboBoxItem>
+      </ComboBox>
+
+      <!-- Protection Boxes -->
+      <TextBox x:Name="planProtect3" Panel.ZIndex="2" Margin ="50,10,0,0" MinWidth="80" MaxWidth="80" MaxHeight="30" MinHeight="30"  TextWrapping="Wrap" HorizontalAlignment = "Left" VerticalAlignment="Top" 
+       Grid.Column="2" Grid.Row="7" Grid.ColumnSpan ="4" Grid.RowSpan="3" FontSize="18" Text= "{Binding returnTempPlanCache.protectionActiveChar, ElementName=RootWindow, UpdateSourceTrigger=PropertyChanged}" />
+      <!-- Delay Length -->
+
+      <TextBox x:Name="planProtect1" Panel.ZIndex="2" Margin ="50,10,0,0" MinWidth="300" MaxWidth="300" MaxHeight="30" MinHeight="30"  TextWrapping="Wrap" HorizontalAlignment = "Left" VerticalAlignment="Top" 
+       Grid.Column="2" Grid.Row="7" Grid.ColumnSpan ="4" Grid.RowSpan="3" FontSize="18" />
+      <!-- Password -->
+
+      <TextBox x:Name="planProtect2" Panel.ZIndex="2" Margin ="50,10,0,0" MinWidth="80" MaxWidth="80" MaxHeight="30" MinHeight="30" TextWrapping="Wrap" HorizontalAlignment = "Left" VerticalAlignment="Top" 
+       Grid.Column="2" Grid.Row="7" Grid.ColumnSpan ="4" Grid.RowSpan="3" FontSize="18" Text= "{Binding returnTempPlanCache.protectionActiveChar, ElementName=RootWindow, UpdateSourceTrigger=PropertyChanged}" />
+      <!-- Password -->
+
+      <!-- On/Off selectors -->
+      <Label x:Name ="protectAllowLabel" Panel.ZIndex="2" Content="Disabled?" Grid.Column="1" Grid.Row="9" Grid.ColumnSpan ="2" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" />
+      <ToggleButton x:Name="protectSelectAllow" Panel.ZIndex="2" Content="Off" Checked = "HandleCheck" Unchecked = "HandleUnchecked" Margin="7"  Width = "85" HorizontalAlignment = "Center"  
+              Grid.Column="2" Grid.Row="9" Grid.ColumnSpan ="1" Grid.RowSpan="1" IsChecked="{Binding returnTempPlanCache.returnStricterAddAllow, ElementName=RootWindow}" Style="{DynamicResource NormalToggleButton}" />
+
+      <Label x:Name ="protectPauseLabel" Panel.ZIndex="2" Content="Pausing Allowed?" Grid.Column="1" Grid.Row="10" Grid.ColumnSpan ="2" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" />
+      <ToggleButton x:Name="protectSelectPause" Panel.ZIndex="2" Content="Off" Checked = "HandleCheck" Unchecked = "HandleUnchecked" Margin="7"  Width = "85" HorizontalAlignment = "Center"  
+              Grid.Column="2" Grid.Row="10" Grid.ColumnSpan ="1" Grid.RowSpan="1" IsChecked="{Binding returnTempPlanCache.returnPausingAllowed, ElementName=RootWindow}"  Style="{DynamicResource NormalToggleButton}" />
+
+      <!--<Label x:Name ="protectServiceLabel" Content="Service Enforcement:" Grid.Column="1" Grid.Row="11" Grid.ColumnSpan ="2" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" />
+      <ToggleButton x:Name="protectSelectService" Content="Off" Checked = "HandleCheck" Unchecked = "HandleUnchecked" Margin="7"  Width = "85" HorizontalAlignment = "Center"  
+              Grid.Column="2" Grid.Row="11" Grid.ColumnSpan ="1" Grid.RowSpan="1"  />-->
+
+      <!-- General Information-->
+      <Label x:Name ="planNameLabel" Panel.ZIndex="2" Content="Plan Name:" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" />
+      <TextBox x:Name="planNameBox" Panel.ZIndex="2" Margin ="0,-30,0,0" MinWidth="400" MaxWidth="400" MaxHeight="30" MinHeight="30" TextWrapping="Wrap" HorizontalAlignment = "Left" VerticalAlignment="Center" 
+               Grid.Column="2" Grid.Row="1" Grid.ColumnSpan ="2" Grid.RowSpan="2" FontSize="20" Text= "{Binding returnTempPlanCache.planName, ElementName=RootWindow, UpdateSourceTrigger=PropertyChanged}" />
+
+      <Label x:Name ="planDescriptionLabel" Panel.ZIndex="2" Margin ="0,20,0,0" Content="Plan Description:" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan ="1" Grid.RowSpan="2" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" />
+      <TextBox x:Name="planDescriptionBox" Panel.ZIndex="2" Margin ="0,20,0,0" MinWidth="400" MaxWidth="400" MaxHeight="60" MinHeight="60"  AcceptsReturn="True" TextWrapping="Wrap" HorizontalAlignment = "Left" VerticalAlignment="Top" 
+               Grid.Column="2" Grid.Row="2" Grid.ColumnSpan ="4" Grid.RowSpan="3" FontSize="18" Text= "{Binding returnTempPlanCache.planDescription, ElementName=RootWindow, UpdateSourceTrigger=PropertyChanged}" />
+
+      <!-- Next Button (Always shows) -->
+      <Button x:Name="nextButtonPlanPage1" Style ="{DynamicResource RoundCornerBlue}" Width ="60" Grid.Column="4" Grid.ColumnSpan="2" Grid.Row="12" Grid.RowSpan="1" Margin="0,0,0,0" FontSize="20" Background="SteelBlue" HorizontalAlignment="Center" VerticalAlignment="Center" Click="loadSecondPlanScreen">Next</Button>
+
+      <!-- Import/Export Button (Shows only when the plan is being edited, will not work for new plans), export, may need to move-->
+      <!--<Button x:Name="importPlanButton" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="1" Margin="0,0,0,0" FontSize="20" Background="SteelBlue" HorizontalAlignment="Right" VerticalAlignment="Center">Import</Button>
+        <Button x:Name="exportPlanButton" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="1" Margin="0,0,0,0" FontSize="20" Background="SteelBlue" HorizontalAlignment="Right" VerticalAlignment="Center">Export</Button>-->
+
+      <Label x:Name ="generalPlanLabel" Margin ="50,5,0,0" Panel.ZIndex="2" Content="General Plan Information" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan ="2" Grid.RowSpan="1" FontSize="26" HorizontalAlignment="Left" VerticalAlignment="Center" />
+
+      <Rectangle x:Name="PlanBasicWrapper1" RadiusX="8" RadiusY="8" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="10" Grid.RowSpan="5" HorizontalAlignment="Left" Height="130" VerticalAlignment="Top" Width="780" Fill="#EE7bd0c8" Margin="10,3,10,10" Panel.ZIndex="0" />
+      <Rectangle x:Name="PlanBasicWrapper2" RadiusX="8" RadiusY="8" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="10" Grid.RowSpan="5" HorizontalAlignment="Left" Height="130" VerticalAlignment="Top" Width="780" Fill="#EE7bd0c8" Margin="10,3,10,10" Panel.ZIndex="0" />
+      <Rectangle x:Name="PlanBasicWrapper3" RadiusX="8" RadiusY="8" Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="10" Grid.RowSpan="5" HorizontalAlignment="Left" Height="80" VerticalAlignment="Top" Width="780" Fill="#EE7bd0c8" Margin="10,3,10,10" Panel.ZIndex="0" />
+
+    </Grid>
+
+    <!-- Within Plan Editor, Screen 2: Application List and Whitelist/Blacklist  -->
+    <Grid x:Name="plan_grid_2" Margin="10,50,0,0" Grid.Column = "0" Grid.Row ="1" Grid.RowSpan="9" Grid.ColumnSpan="10" Visibility="Collapsed">
+      <Grid.RowDefinitions>
+        <!-- Max 24 (Technically 26) Options  2*12 (or 13 layout)-->
+        <RowDefinition Height="60" />
+        <RowDefinition Height="120" />
+        <RowDefinition Height="120" />
+        <RowDefinition Height="120" />
+        <RowDefinition Height="120" />
+        <RowDefinition Height="120" />
+        <!-- Empty -->
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="50" />
+        <ColumnDefinition Width="250" />
+        <ColumnDefinition Width="40" />
+        <ColumnDefinition Width="250" />
+        <ColumnDefinition Width="200" />
+        <ColumnDefinition Width="60" />
+      </Grid.ColumnDefinitions>
+      <Rectangle x:Name="Plan2Background" RadiusX="30" RadiusY="30"  Grid.ColumnSpan="10" HorizontalAlignment="Left" Height="580" VerticalAlignment="Top" Width="800" Fill="LightBlue" Margin="0,0,0,0" Grid.RowSpan="17" />
+      <!-- App Methods-->
+      <Label x:Name ="listingSelectLabel" Panel.ZIndex="2" Content="Block Type:" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan ="1" Grid.RowSpan="1" 
+             FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" Margin ="40,0,0,0" />
+      <ComboBox x:Name="listingSelectBox" Panel.ZIndex="2" Grid.Column="2" Grid.Row="0" Width="225" Margin ="-150,0,0,0" Grid.ColumnSpan ="2" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <ComboBoxItem IsSelected="True">Blacklist (Block All Listed)</ComboBoxItem>
+        <ComboBoxItem>Whitelist (Block All Except Those Listed)</ComboBoxItem>
+      </ComboBox>
+
+      <!-- Confirm Button -->
+      <Button x:Name="appUpdateButton" Style="{DynamicResource RoundCornerBlue}" Width="110" Panel.ZIndex="2" Grid.Column="3" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="1" Margin="60,0,0,0" 
+              FontSize="20" Background="SteelBlue" HorizontalAlignment="Center" VerticalAlignment="Center" Click="confirmListType">Confirm</Button>
+
+      <!-- Customized Labels -->
+      <Label x:Name ="appNameAllowLabel" Panel.ZIndex="2" Margin ="0,0,0,0" Content="Name Whitelist:" Grid.Column="3" Grid.Row="1" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Top" />
+      <Label x:Name ="appNameBlockLabel" Panel.ZIndex="2" Margin ="0,0,0,0" Content="Name Blacklist:" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Top" />
+      <Label x:Name ="appPathAllowLabel" Panel.ZIndex="2" Margin ="0,-25,0,0" Content="Path Whitelist:" Grid.Column="3" Grid.Row="3" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Top" />
+      <Label x:Name ="appPathBlockLabel" Panel.ZIndex="2" Margin ="0,-25,0,0" Content="Path Blacklist:" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan ="1" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Top" />
+
+      <!-- Customized App List-->
+      <TextBox x:Name="appNameAllowBox" Panel.ZIndex="2" Margin="20,-20,0,0"  MinWidth="220" MaxWidth="220" MaxHeight="150" MinHeight="150" AcceptsReturn="True" TextWrapping="Wrap" HorizontalAlignment = "Left" 
+               VerticalAlignment="Center" Grid.Column="3" Grid.Row="1" Grid.ColumnSpan ="1" Grid.RowSpan="2" FontSize="16"  Text= "{Binding returnTempPlanCache.returnNameWhitelist, ElementName=RootWindow}" />
+      <TextBox x:Name="appNameBlockBox" Panel.ZIndex="2" Margin="20,-20,0,0" MinWidth="220" MaxWidth="220" MaxHeight="150" MinHeight="150" AcceptsReturn="True" TextWrapping="Wrap" HorizontalAlignment = "Left" 
+               VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan ="1" Grid.RowSpan="2" FontSize="16"  Text= "{Binding returnTempPlanCache.returnNameBlacklist, ElementName=RootWindow}" />
+      <TextBox x:Name="appPathAllowBox" Panel.ZIndex="2" Margin="20,0,0,0" MinWidth="220" MaxWidth="220" MaxHeight="210" MinHeight="210" AcceptsReturn="True" TextWrapping="Wrap" HorizontalAlignment = "Left" 
+               VerticalAlignment="Center" Grid.Column="3" Grid.Row="3" Grid.ColumnSpan ="3" Grid.RowSpan="2" FontSize="16"  Text= "{Binding returnTempPlanCache.returnPathWhitelist, ElementName=RootWindow}" />
+      <TextBox x:Name="appPathBlockBox" Panel.ZIndex="2" Margin="20,0,0,0" MinWidth="220" MaxWidth="220" MaxHeight="210" MinHeight="210" AcceptsReturn="True" TextWrapping="Wrap" HorizontalAlignment = "Left" 
+               VerticalAlignment="Center" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan ="3" Grid.RowSpan="2" FontSize="16"  Text= "{Binding returnTempPlanCache.returnPathBlacklist, ElementName=RootWindow}" />
+
+      <!-- Next Button (Always shows) -->
+      <Button x:Name="nextButtonPlanPage2" Style="{DynamicResource RoundCornerBlue}" Width="60" Panel.ZIndex="2" Grid.Column="4" Grid.ColumnSpan="1" Grid.Row="4" Grid.RowSpan="1" Margin="110,50,0,0" FontSize="20" Background="SteelBlue" HorizontalAlignment="Left" VerticalAlignment="Top" Click="loadThirdPlanScreen">Next</Button>
+      <Button x:Name="backButtonPlanPage2" Style="{DynamicResource RoundCornerBlue}" Width="60" Panel.ZIndex="2" Grid.Column="4" Grid.ColumnSpan="1" Grid.Row="4" Grid.RowSpan="1" Margin="30,50,0,0" FontSize="20" Background="SteelBlue" HorizontalAlignment="Left" VerticalAlignment="Top" Click="loadFirstPlanScreen">Back</Button>
+
+      <Rectangle x:Name="PlanAppWrapper1" RadiusX="8" RadiusY="8" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="10" Grid.RowSpan="5" HorizontalAlignment="Left" Height="200" VerticalAlignment="Top" Width="550" Fill="#EE7bd0c8" Margin="0,0,10,10" Panel.ZIndex="0" />
+      <Rectangle x:Name="PlanAppWrapper2" RadiusX="8" RadiusY="8" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="10" Grid.RowSpan="5" HorizontalAlignment="Left" Height="260" VerticalAlignment="Top" Width="550" Fill="#EE7bd0c8" Margin="0,-25,10,10" Panel.ZIndex="0" />
+
+    </Grid>
+
+    <!-- Within Plan Editor, Screen 3: Timing Style and Times -->
+    <Grid x:Name="plan_grid_3" Margin="10,50,0,0" Grid.Column = "0" Grid.Row ="1" Grid.RowSpan="9" Grid.ColumnSpan="10" Visibility="Collapsed">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="60" />
+        <RowDefinition Height="60" />
+        <RowDefinition Height="60" />
+        <RowDefinition Height="60" />
+        <RowDefinition Height="60" />
+        <RowDefinition Height="60" />
+        <RowDefinition Height="60" />
+        <RowDefinition Height="60" />
+        <RowDefinition Height="60" />
+        <RowDefinition Height="60" />
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="80" />
+        <ColumnDefinition Width="80" />
+        <ColumnDefinition Width="80" />
+        <ColumnDefinition Width="80" />
+        <ColumnDefinition Width="80" />
+        <ColumnDefinition Width="80" />
+        <ColumnDefinition Width="80" />
+        <ColumnDefinition Width="80" />
+        <ColumnDefinition Width="80" />
+        <ColumnDefinition Width="80" />
+        <ColumnDefinition Width="80" />
+      </Grid.ColumnDefinitions>
+      <Rectangle x:Name="Plan3Background" RadiusX="30" RadiusY="30"  Grid.ColumnSpan="10" HorizontalAlignment="Left" Height="540" VerticalAlignment="Top" Width="800" Fill="LightBlue" Margin="0,0,0,0" Grid.RowSpan="17" />
+      <!-- Timing Type -->
+      <Label x:Name ="timeSelectLabel"  Content="Timing Type:" Grid.Column="3" Grid.Row="0" Grid.ColumnSpan ="2" Grid.RowSpan="1" Margin="-60,0,0,0" FontSize="24" HorizontalAlignment="Left" VerticalAlignment="Center" />
+      <ComboBox x:Name="timeSelect" Grid.Column="4" Grid.Row="0" Grid.ColumnSpan ="2" Grid.RowSpan="1" FontSize="21" HorizontalAlignment="Center" VerticalAlignment="Center" Width="130">
+        <ComboBoxItem IsSelected="True">Scheduled</ComboBoxItem>
+        <ComboBoxItem>Pomodoro</ComboBoxItem>
+      </ComboBox>
+      <Button x:Name="confirmTimeSelect" Style="{DynamicResource RoundCornerBlue}" Width="80" Content="Select" Grid.Column="6" Grid.Row="0" Grid.ColumnSpan ="2" Grid.RowSpan="1" FontSize="21" HorizontalAlignment="Left" VerticalAlignment="Center" Click="changeConfigurationTiming" />
+
+      <!-- Help Blob -->
+      <Label x:Name="timingHelpLabel" Margin ="-30,0,0,0"  Grid.Column="7" Grid.Row="2" Grid.ColumnSpan ="3" Grid.RowSpan="6" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Top"
+        Content="Scheduled: Runs according to&#x0a;the schedule at the specified&#x0a;intervals in the format:&#x0a;0000-0000 like a 24 hour &#x0a;clock&#x0a;&#x0a;
+Pomodoro: Follows the&#x0a;pomodoro routine which&#x0a;contains small and large&#x0a;breaks in a cyclic pattern&#x0a;with short blocks of work&#x0a;in between">
+      </Label>
+      <Label x:Name ="timingMethodHelpLabel" Margin="180,20,0,0" Content="Help: " Grid.Column="5" Grid.Row="1" Grid.ColumnSpan ="4" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+
+      <!-- Scheduled Days  -->
+      <Label x:Name ="timingMethodLabel" Content="Timing Details: " Grid.Column="1" Grid.Row="1" Grid.ColumnSpan ="3" Grid.RowSpan="1" FontSize="18" Margin="30,20,00,0" HorizontalAlignment="Left" VerticalAlignment="Center" />
+      <Label x:Name ="dayActiveLabel" Content="Days Active:" Margin="44,-40,0,0" Grid.Column="4" Grid.Row="1" Grid.ColumnSpan ="3" Grid.RowSpan="2" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" />
+      <Grid x:Name="dayCheckGrid" Margin="44,80,0,0" Grid.Column = "4" Grid.Row ="1" Grid.RowSpan="8" Grid.ColumnSpan="3" Panel.ZIndex="2" >
+        <Grid.RowDefinitions>
+          <RowDefinition Height="35" />
+          <RowDefinition Height="35" />
+          <RowDefinition Height="35" />
+          <RowDefinition Height="35" />
+          <RowDefinition Height="35" />
+          <RowDefinition Height="35" />
+          <RowDefinition Height="35" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="200" />
+        </Grid.ColumnDefinitions>
+        <CheckBox x:Name="day7" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan ="2" Grid.RowSpan="1">
+          <Label Margin="0,-5,0,0" Content="Sunday" FontSize="18" FontFamily="Arial"/>
+        </CheckBox>
+        <CheckBox x:Name="day1" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan ="2" Grid.RowSpan="1">
+          <Label Margin="0,-5,0,0" Content="Monday" FontSize="18" FontFamily="Arial"/>
+        </CheckBox>
+        <CheckBox x:Name="day2" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan ="2" Grid.RowSpan="1">
+          <Label Margin="0,-5,0,0" Content="Tuesday" FontSize="18" FontFamily="Arial"/>
+        </CheckBox>
+        <CheckBox x:Name="day3" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan ="2" Grid.RowSpan="1">
+          <Label Margin="0,-5,0,0" Content="Wednesday" FontSize="18" FontFamily="Arial"/>
+        </CheckBox>
+        <CheckBox x:Name="day4" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan ="2" Grid.RowSpan="1">
+          <Label Margin="0,-5,0,0" Content="Thursday" FontSize="18" FontFamily="Arial"/>
+        </CheckBox>
+        <CheckBox x:Name="day5" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan ="2" Grid.RowSpan="1">
+          <Label Margin="0,-5,0,0" Content="Friday" FontSize="18" FontFamily="Arial"/>
+        </CheckBox>
+        <CheckBox x:Name="day6" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="0" Grid.Row="6" Grid.ColumnSpan ="2" Grid.RowSpan="1">
+          <Label Margin="0,-5,0,0" Content="Saturday" FontSize="18" FontFamily="Arial"/>
+        </CheckBox>
+      </Grid>
+
+      <!-- Regular Schedule -->
+      <Label x:Name ="timeNormal" Content="Active&#x0a;Time" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan ="2" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" />
+      <TextBox x:Name="timeNormalBox" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan ="3" Grid.RowSpan="2" MinWidth="170" MaxWidth="170" MaxHeight="100" MinHeight="100" Margin="30,0,0,0" 
+               Text= "{Binding returnTempPlanCache.returnActiveTime, ElementName=RootWindow}"></TextBox>
+
+      <!-- Pomodoro -->
+      <Label x:Name ="startTimePomoLabel" Margin="0,0,0,0" Content="Start&#x0a;Time" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan ="2" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" />
+      <TextBox x:Name="startTimePomoBox"  Grid.Column="1" Grid.Row="2" Grid.ColumnSpan ="3" Grid.RowSpan="1" MinWidth="170" MaxWidth="170" MaxHeight="50" MinHeight="50" Margin="30,0,0,0"
+               Text= "{Binding returnTempPlanCache.pomoScheduledStart, ElementName=RootWindow}"></TextBox>
+
+      <Label x:Name ="smallBreakPomoLabel" Content="Small&#x0a;Break" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan ="2" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" />
+      <TextBox x:Name="smallBreakPomoBox"  Grid.Column="1" Grid.Row="3" Grid.ColumnSpan ="2" Grid.RowSpan="1" MinWidth="60" MaxWidth="60" MaxHeight="30" MinHeight="30" 
+               Text= "{Binding returnTempPlanCache.pomoSmallBreak, ElementName=RootWindow}"></TextBox>
+
+      <Label x:Name ="largeBreakPomoLabel" Content="Large&#x0a;Break" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan ="2" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" />
+      <TextBox x:Name="largeBreakPomoBox"  Grid.Column="1" Grid.Row="4" Grid.ColumnSpan ="2" Grid.RowSpan="1"  MinWidth="60" MaxWidth="60" MaxHeight="30" MinHeight="30" 
+               Text= "{Binding returnTempPlanCache.pomoLargeBreak, ElementName=RootWindow}"></TextBox>
+
+      <Label x:Name ="pomoAmountLabel" Content="Pomo&#x0a;Cycles" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan ="2" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" />
+      <TextBox x:Name="pomoAmountBox"  Grid.Column="1" Grid.Row="5" Grid.ColumnSpan ="2" Grid.RowSpan="1"  MinWidth="60" MaxWidth="60" MaxHeight="30" MinHeight="30"
+               Text= "{Binding returnTempPlanCache.pomoAmount, ElementName=RootWindow}"></TextBox>
+
+      <Label x:Name ="pomoDurationLabel" Content="Work&#x0a;Duration" Margin="10,0,0,0" Grid.Column="0" Grid.Row="6" Grid.ColumnSpan ="2" Grid.RowSpan="1" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"  />
+      <TextBox x:Name="pomoDurationBox" Grid.Column="1" Grid.Row="6" Grid.ColumnSpan ="2" Grid.RowSpan="1" MinWidth="60" MaxWidth="60" MaxHeight="30" MinHeight="30" 
+               Text="{Binding returnTempPlanCache.pomoDuration, ElementName=RootWindow}"></TextBox>
+
+      <!-- Next Button (Always shows) -->
+      <Button x:Name="nextButtonPlanPage3" Style="{DynamicResource RoundCornerBlue}" Width="70" Grid.Column="7" Grid.ColumnSpan="2" Grid.Row="7" Grid.RowSpan="2" Margin="80,0,0,0" FontSize="20" Background="SteelBlue" HorizontalAlignment="Center" VerticalAlignment="Center" Click="returnToMainPlan">Finish</Button>
+      <Button x:Name="backButtonPlanPage3" Style="{DynamicResource RoundCornerBlue}" Width="60" Grid.Column="6" Grid.ColumnSpan="2" Grid.Row="7" Grid.RowSpan="2" Margin="80,0,0,0" FontSize="20" Background="SteelBlue" HorizontalAlignment="Center" VerticalAlignment="Center" Click="loadSecondPlanScreen">Back</Button>
+
+      <!-- Styling Rectangles -->
+      <Rectangle x:Name="PlanTimeWrapper1" RadiusX="8" RadiusY="8" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="5" Grid.RowSpan="9" HorizontalAlignment="Left" Height="370" VerticalAlignment="Top" Width="305" Fill="#EE7bd0c8" Margin="20,10,10,10" Panel.ZIndex="0" />
+      <Rectangle x:Name="PlanTimeWrapper2" RadiusX="8" RadiusY="8" Grid.Column="4" Grid.Row="1" Grid.ColumnSpan="3" Grid.RowSpan="9" HorizontalAlignment="Left" Height="370" VerticalAlignment="Top" Width="150" Fill="#EE7bd0c8" Margin="27,10,10,10" Panel.ZIndex="0" />
+      <Rectangle x:Name="PlanTimeWrapper3" RadiusX="8" RadiusY="8" Grid.Column="6" Grid.Row="1" Grid.ColumnSpan="4" Grid.RowSpan="9" HorizontalAlignment="Left" Height="370" VerticalAlignment="Top" Width="260" Fill="#EE7bd0c8" Margin="40,10,10,10" Panel.ZIndex="0" />
+    </Grid>
+
+  </Grid>
+
+</Window>
+
+  
+  
+
+  
+  
+  

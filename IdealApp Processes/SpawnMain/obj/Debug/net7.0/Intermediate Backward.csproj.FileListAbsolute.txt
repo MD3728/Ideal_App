@@ -1,0 +1,29 @@
+C:\Users\MD3728\Downloads\Incomplete_Programs\Triple Decker\Intermediate Backward\bin\Debug\net7.0\Intermediate Backward.exe
+C:\Users\MD3728\Downloads\Incomplete_Programs\Triple Decker\Intermediate Backward\bin\Debug\net7.0\Intermediate Backward.deps.json
+C:\Users\MD3728\Downloads\Incomplete_Programs\Triple Decker\Intermediate Backward\bin\Debug\net7.0\Intermediate Backward.runtimeconfig.json
+C:\Users\MD3728\Downloads\Incomplete_Programs\Triple Decker\Intermediate Backward\bin\Debug\net7.0\Intermediate Backward.dll
+C:\Users\MD3728\Downloads\Incomplete_Programs\Triple Decker\Intermediate Backward\bin\Debug\net7.0\Intermediate Backward.pdb
+C:\Users\MD3728\Downloads\Incomplete_Programs\Triple Decker\Intermediate Backward\obj\Debug\net7.0\Intermediate Backward.csproj.AssemblyReference.cache
+C:\Users\MD3728\Downloads\Incomplete_Programs\Triple Decker\Intermediate Backward\obj\Debug\net7.0\Intermediate Backward.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\MD3728\Downloads\Incomplete_Programs\Triple Decker\Intermediate Backward\obj\Debug\net7.0\Intermediate Backward.AssemblyInfoInputs.cache
+C:\Users\MD3728\Downloads\Incomplete_Programs\Triple Decker\Intermediate Backward\obj\Debug\net7.0\Intermediate Backward.AssemblyInfo.cs
+C:\Users\MD3728\Downloads\Incomplete_Programs\Triple Decker\Intermediate Backward\obj\Debug\net7.0\Intermediate Backward.csproj.CoreCompileInputs.cache
+C:\Users\MD3728\Downloads\Incomplete_Programs\Triple Decker\Intermediate Backward\obj\Debug\net7.0\Intermediate Backward.dll
+C:\Users\MD3728\Downloads\Incomplete_Programs\Triple Decker\Intermediate Backward\obj\Debug\net7.0\refint\Intermediate Backward.dll
+C:\Users\MD3728\Downloads\Incomplete_Programs\Triple Decker\Intermediate Backward\obj\Debug\net7.0\Intermediate Backward.pdb
+C:\Users\MD3728\Downloads\Incomplete_Programs\Triple Decker\Intermediate Backward\obj\Debug\net7.0\Intermediate Backward.genruntimeconfig.cache
+C:\Users\MD3728\Downloads\Incomplete_Programs\Triple Decker\Intermediate Backward\obj\Debug\net7.0\ref\Intermediate Backward.dll
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\SpawnMain\bin\Debug\net7.0\Intermediate Backward.exe
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\SpawnMain\bin\Debug\net7.0\Intermediate Backward.deps.json
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\SpawnMain\bin\Debug\net7.0\Intermediate Backward.runtimeconfig.json
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\SpawnMain\bin\Debug\net7.0\Intermediate Backward.dll
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\SpawnMain\bin\Debug\net7.0\Intermediate Backward.pdb
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\SpawnMain\obj\Debug\net7.0\Intermediate Backward.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\SpawnMain\obj\Debug\net7.0\Intermediate Backward.AssemblyInfoInputs.cache
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\SpawnMain\obj\Debug\net7.0\Intermediate Backward.AssemblyInfo.cs
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\SpawnMain\obj\Debug\net7.0\Intermediate Backward.csproj.CoreCompileInputs.cache
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\SpawnMain\obj\Debug\net7.0\Intermediate Backward.dll
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\SpawnMain\obj\Debug\net7.0\refint\Intermediate Backward.dll
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\SpawnMain\obj\Debug\net7.0\Intermediate Backward.pdb
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\SpawnMain\obj\Debug\net7.0\Intermediate Backward.genruntimeconfig.cache
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\SpawnMain\obj\Debug\net7.0\ref\Intermediate Backward.dll
