@@ -40,3 +40,4 @@ C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\IdealApp\b
 C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\IdealApp\bin\Debug\net7.0\System.Web.Http.WebHost.dll
 C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\IdealApp\bin\Debug\net7.0\Newtonsoft.Json.dll
 C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\IdealApp\bin\Debug\net7.0\Newtonsoft.Json.Bson.dll
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\IdealApp\obj\Debug\net7.0\Primary.sourcelink.json

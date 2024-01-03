@@ -449,11 +449,13 @@ namespace IA_GUI
               break;
             }
             var inputInstruction = (Label)this.FindName($"TLabel");
+            var userInput = (PasswordBox)this.FindName($"PasswordInput");
+            userInput.Clear(); // Clear previous password
             var planFrame = (Grid)this.FindName($"password_grid");
             planFrame.Visibility = Visibility.Visible;
             var origScreen = (Grid)this.FindName($"plan_grid");
             origScreen.Visibility = Visibility.Collapsed;
-
+           
             if (tempPlanCache.protectionActiveType == 2)
             {
               inputInstruction.Content = "Please Enter the Password for This Set:\n";
@@ -567,6 +569,8 @@ namespace IA_GUI
         string inputPwd = planFrame2.Password;
         if (BackEnd.verifyPassword(inputPwd, tempPlanCache.protectionActivePwd))
         {
+          var origScreen1 = (Grid)this.FindName($"password_grid");//Remove Screen
+          origScreen1.Visibility = Visibility.Collapsed;
           return true;
         }
         else
@@ -581,6 +585,8 @@ namespace IA_GUI
         string inputPwd = planFrame2.Password;
         if (inputPwd == randomChars)
         {
+          var origScreen1 = (Grid)this.FindName($"password_grid");//Remove Screen
+          origScreen1.Visibility = Visibility.Collapsed;
           return true;
         }
         else
@@ -1430,7 +1436,7 @@ namespace IA_GUI
             totalTime += Int32.Parse(b);
           }
           double hours = Math.Floor(totalTime / 3600.0);
-          double minutes = Math.Floor(totalTime / 60.0);
+          double minutes = Math.Floor((totalTime - hours*3600) / 60.0);
           int seconds = totalTime % 60;
           activeStat.Content = $"{hours}H {minutes}M {seconds}S";
 

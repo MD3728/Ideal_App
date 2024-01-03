@@ -51,3 +51,4 @@ C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp GUI\IA_GUI\obj\Debug
 C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp GUI\IA_GUI\obj\Debug\net7.0-windows10.0.19041.0\IA_GUI.pdb
 C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp GUI\IA_GUI\obj\Debug\net7.0-windows10.0.19041.0\IA_GUI.genruntimeconfig.cache
 C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp GUI\IA_GUI\obj\Debug\net7.0-windows10.0.19041.0\ref\IA_GUI.dll
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp GUI\IA_GUI\obj\Debug\net7.0-windows10.0.19041.0\IA_GUI.sourcelink.json
