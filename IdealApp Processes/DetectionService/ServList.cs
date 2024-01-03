@@ -13,7 +13,7 @@ using System.Xml.Linq;
 using static System.Collections.Specialized.BitVector32;
 using static System.Net.Mime.MediaTypeNames;
 
-// Sqlite Dependencies
+// Personal Dependencies
 using Dapper;
 using System.Configuration;
 using System.Data.SQLite;
