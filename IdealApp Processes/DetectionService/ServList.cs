@@ -130,14 +130,14 @@ namespace ServiceTest
       foreach (PlanInformation cPlan in allPlan)
       {
         // Firewall Blocking and Active
-        if ((cPlan.blockMethod == 1)&&(cPlan.currentlyActive == 1))
+        if ((cPlan.enforcementMethod == 1)&&(cPlan.currentlyActive == 1))
         {
           string[] blockedPaths = cPlan.blockedPaths.Split('|');
           foreach (string cPath in blockedPaths)
           {
             var rule = FirewallManager.Instance.CreateApplicationRule(
               FirewallProfiles.Domain | FirewallProfiles.Private | FirewallProfiles.Public,
-              name: $"IdealBlock: {cPath}",
+              name: @"IdealBlock: " + cPath,
               FirewallAction.Block,
               cPath
             );
@@ -170,8 +170,8 @@ namespace ServiceTest
           switch (rootInformation.attributeName)
           {
             case "Disable DateTime"://Change Registry Value
-              RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\PolicyManager\default\Settings\AllowDateTime", true);
-              key.SetValue("value", 1, RegistryValueKind.DWord);
+              RegistryKey localMachineKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);//Circumvent Virtualization
+              RegistryKey key = localMachineKey.OpenSubKey(@"SOFTWARE\Microsoft\PolicyManager\default\Settings\AllowDateTime", true);
               break;
             case "Service Protection"://Only task enforcement part of service is off
               serviceProtectionEnabled = false;
@@ -191,7 +191,8 @@ namespace ServiceTest
           switch (rootInformation.attributeName)
           {
             case "Disable DateTime"://Change Registry Value
-              RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\PolicyManager\default\Settings\AllowDateTime", true);
+              RegistryKey localMachineKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);//Circumvent Virtualization
+              RegistryKey key = localMachineKey.OpenSubKey(@"SOFTWARE\Microsoft\PolicyManager\default\Settings\AllowDateTime", true);
               key.SetValue("value", 0, RegistryValueKind.DWord);
               break;
             case "Disable Task Manager"://Kill Task Manager
@@ -333,42 +334,41 @@ namespace ServiceTest
       UpdateFirewallRules();
       // Set up a timer that triggers every 5 seconds.
       System.Timers.Timer timer = new System.Timers.Timer();
-      timer.Interval = 5000; // 5 seconds
+      timer.Interval = 1000; // 5 seconds
       timer.Elapsed += new ElapsedEventHandler(this.OnTimer);
       timer.Start();
-
       // Create a new FileSystemWatcher and let it run in the background to track important directories settings
-      using (FileSystemWatcher watcher = new FileSystemWatcher())
-      {
-        watcher.Path = rootDirectory;  // Specify the directory to monitor
+      //using (FileSystemWatcher watcher = new FileSystemWatcher())
+      //{
+      //  watcher.Path = rootDirectory;  // Specify the directory to monitor
 
-        // Watch for all changes in LastAccess and LastWrite times, and the renaming of files or directories. 
-        watcher.NotifyFilter = NotifyFilters.Attributes
-                        | NotifyFilters.CreationTime
-                        | NotifyFilters.DirectoryName
-                        | NotifyFilters.FileName
-                        | NotifyFilters.LastAccess
-                        | NotifyFilters.LastWrite
-                        | NotifyFilters.Security
-                        | NotifyFilters.Size;
-        watcher.IncludeSubdirectories = true;
+      //  // Watch for all changes in LastAccess and LastWrite times, and the renaming of files or directories. 
+      //  watcher.NotifyFilter = NotifyFilters.Attributes
+      //                  | NotifyFilters.CreationTime
+      //                  | NotifyFilters.DirectoryName
+      //                  | NotifyFilters.FileName
+      //                  | NotifyFilters.LastAccess
+      //                  | NotifyFilters.LastWrite
+      //                  | NotifyFilters.Security
+      //                  | NotifyFilters.Size;
+      //  watcher.IncludeSubdirectories = true;
 
-        // Add event handlers.
-        watcher.Changed += OnChanged;
-        watcher.Created += OnChanged;
-        watcher.Deleted += OnChanged;
-        watcher.Renamed += OnRenamed;
-        watcher.Error += OnError;
+      //  // Add event handlers.
+      //  watcher.Changed += OnChanged;
+      //  watcher.Created += OnChanged;
+      //  watcher.Deleted += OnChanged;
+      //  watcher.Renamed += OnRenamed;
+      //  watcher.Error += OnError;
 
-        // Begin watching.
-        watcher.EnableRaisingEvents = true;
+      //  // Begin watching.
+      //  watcher.EnableRaisingEvents = true;
 
-        // Let watcher run until service ends
-        while (true)
-        {
-          Thread.Sleep(10000);
-        }
-      }
+      //  // Let watcher run until service ends
+      //  while (true)
+      //  {
+      //    Thread.Sleep(10000);
+      //  }
+      //}
     }
 
     // On service stop

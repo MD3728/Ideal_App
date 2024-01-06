@@ -141,3 +141,42 @@ Affected parameters are:
    logtoconsole = 
    logfile = C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\DetectionService\bin\Debug\ServiceTest.InstallLog
    assemblypath = C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\DetectionService\bin\Debug\ServiceTest.exe
+Installing assembly 'C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\DetectionService\bin\Debug\ServiceTest.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\DetectionService\bin\Debug\ServiceTest.InstallLog
+   assemblypath = C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\DetectionService\bin\Debug\ServiceTest.exe
+Installing service ServList...
+Creating EventLog source ServList in log Application...
+Rolling back assembly 'C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\DetectionService\bin\Debug\ServiceTest.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\DetectionService\bin\Debug\ServiceTest.InstallLog
+   assemblypath = C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\DetectionService\bin\Debug\ServiceTest.exe
+Restoring event log to previous state for source ServList.
+Installing assembly 'C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\DetectionService\bin\Debug\ServiceTest.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\DetectionService\bin\Debug\ServiceTest.InstallLog
+   assemblypath = C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\DetectionService\bin\Debug\ServiceTest.exe
+Installing service ServList...
+Service ServList has been successfully installed.
+Creating EventLog source ServList in log Application...
+Committing assembly 'C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\DetectionService\bin\Debug\ServiceTest.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\DetectionService\bin\Debug\ServiceTest.InstallLog
+   assemblypath = C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\DetectionService\bin\Debug\ServiceTest.exe
+Installing assembly 'C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\DetectionService\bin\Debug\ServiceTest.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\DetectionService\bin\Debug\ServiceTest.InstallLog
+   assemblypath = C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\DetectionService\bin\Debug\ServiceTest.exe
+Installing service ServList...
+Service ServList has been successfully installed.
+Creating EventLog source ServList in log Application...
+Committing assembly 'C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\DetectionService\bin\Debug\ServiceTest.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\DetectionService\bin\Debug\ServiceTest.InstallLog
+   assemblypath = C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp Processes\DetectionService\bin\Debug\ServiceTest.exe
