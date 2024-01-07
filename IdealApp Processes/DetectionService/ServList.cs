@@ -291,7 +291,7 @@ namespace ServiceTest
             }
           }
 
-          if ((canShutdown) && (usernames.Contains("MD3728")))
+          if ((canShutdown))
           {
             if (!AppProcessExists()) // Block process does not exist
             {
