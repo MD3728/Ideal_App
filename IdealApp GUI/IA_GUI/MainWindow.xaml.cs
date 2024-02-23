@@ -24,6 +24,7 @@ using System.Windows.Shapes;
 using Xceed.Wpf.Toolkit;
 using System.Threading;
 using System.Runtime.InteropServices;
+using Microsoft.Win32;
 
 // Dependencies that are necessary for this to run
 // System.Security.Cryptography;
@@ -49,9 +50,6 @@ using System.Runtime.InteropServices;
 namespace IA_GUI
 {
 
-  /// <summary>
-  /// Interaction logic for MainWindow.xaml
-  /// </summary>
   public partial class MainWindow : Window
   {
     // Standard Directories
@@ -78,6 +76,11 @@ namespace IA_GUI
     // Constants for GUI
     public const int maxSettings = 9;
     public const int maxStats = 11;
+
+    // Constants for Color
+    Brush greenColor;
+    Brush redColor;
+
 
     // Property to allow for bindings (Plans)
     public PlanInformation returnTempPlanCache {
@@ -106,29 +109,33 @@ namespace IA_GUI
    
     public static Random random = new Random();
 
+    // Constructor
     public MainWindow()
     {
-      InitializeComponent();//Do not touch
+      // Boilerplate
+      InitializeComponent();
 
+      //Initial Screen
       currentScreen = "planMain";
-      loadPlansInformation();
-
-      //Example Code
-      var definedLabel = (Rectangle)this.FindName("GlobalHeader");
-      var wholeGrid = (Grid)this.FindName("total_grid");
-      // For hexadecimal
-      BrushConverter bc = new BrushConverter();
-      //definedLabel.Fill = (Brush)bc.ConvertFrom("#76d7fc");
-      //wholeGrid.Background = (Brush)bc.ConvertFrom("#76d7fc");
-
+      showAllPlans();
     }
 
-    //
-    // Event Handler Methods
-    //
+    public void setUpColors()
+    {
+      // Set up colors
+      BrushConverter bc = new BrushConverter();
+      greenColor = (Brush)bc.ConvertFrom("#31bf58");
+      redColor = (Brush)bc.ConvertFrom("#FFFF6347");
+    }
+
+
+    ///
+    /// Preliminary Loading Process
+    ///
+
 
     // Prepares entry into the initial screen (all plans)
-    public void loadMainPlanScreen(object sender, RoutedEventArgs e)
+    public void preloadMainPlanScreen(object sender, RoutedEventArgs e)
     {
       // Attempt to remove eventhandlers
       var submitButton = (Button)this.FindName("PasswordSubmit");
@@ -174,8 +181,6 @@ namespace IA_GUI
         }
         var planFrame = (Grid)this.FindName($"settings_grid");
         planFrame.Visibility = Visibility.Collapsed;
-        var blockFrame3 = (Grid)this.FindName($"blocked_grid");
-        blockFrame3.Visibility = Visibility.Collapsed;
       }
 
       // For blockedStats, blockedSettings, and all other password screens
@@ -183,11 +188,11 @@ namespace IA_GUI
       blockFrame.Visibility = Visibility.Collapsed;
       var blockFrame2 = (Grid)this.FindName($"blocked_grid");
       blockFrame2.Visibility = Visibility.Collapsed;
-      loadPlansInformation();
+      showAllPlans();
     }
 
     // Prepares entry into statistics screen
-    public void loadStatsScreen(object sender, RoutedEventArgs e)
+    public void preloadStatsScreen(object sender, RoutedEventArgs e)
     {
       if (currentScreen == "planMain")
       {
@@ -228,11 +233,11 @@ namespace IA_GUI
         var blockFrame = (Grid)this.FindName($"blocked_grid");
         blockFrame.Visibility = Visibility.Collapsed;
       }
-      displayStatsInformation();
+      showStatsInformation();
     }
 
     // Prepares entry into global settings screen
-    public void loadSettingsScreen(object sender, RoutedEventArgs e)
+    public void preloadSettingsScreen(object sender, RoutedEventArgs e)
     {
       if (currentScreen == "statsMain")
       {
@@ -252,106 +257,11 @@ namespace IA_GUI
       }
       var blockFrame2 = (Grid)this.FindName($"password_grid");
       blockFrame2.Visibility = Visibility.Collapsed;
-      displaySettingsInformation();
-    }
-
-    // Event handler for changing global statistics settings (switching between daily and weekly)
-    public void changeConfigurationStat(object sender, RoutedEventArgs e)
-    {// Make sure not to select any option by default
-      var comboBoxOption1 = (ComboBoxItem)this.FindName($"timeChoice1");
-      bool firstOption = comboBoxOption1.IsSelected;
-      List <StatsInformation> statData = BackEnd.parseStatistics();
-      if (firstOption)
-      {
-        ApplyTemplate();
-        int numStats2 = 1;
-        foreach (StatsInformation cStat in statData)
-        {
-          if (numStats2 <= statData.Count())
-          {
-            var activeStat3 = (Label)this.FindName($"statTime{numStats2}");
-            if (activeStat3 == null)
-            {
-              continue;
-            }
-            // Read and parse data
-            int processCDay = cStat.processCDay;
-            double hours = Math.Floor(processCDay / 3600.0);
-            double minutes = Math.Floor(processCDay / 60.0);
-            int seconds = processCDay % 60;
-            activeStat3.Content = $"{hours}H {minutes}M {seconds}S";
-          }
-          numStats2++;
-        }
-      }
-      else
-      {
-        showWeekStat(statData);
-      }
-    }
-
-    // For reloading with different timing methods inside of plans
-    public void changeConfigurationTiming(object sender, RoutedEventArgs e)
-    {
-      var comboBoxOption1 = (ComboBox)this.FindName($"timeSelect");
-      int selectedOption = comboBoxOption1.SelectedIndex;
-      switch (selectedOption)
-      {
-        case 0://Scheduled
-          tempPlanCache.timingMethod = 0;
-          break;
-        case 1://Pomodoro
-          tempPlanCache.timingMethod = 1;
-          break;
-        default:
-          break;
-      }
-
-      showTimingInformation();
-    }
-
-    // ComboxBox Trigger: For changing protection in Plan General Screen (planScreen1), changes text boxes
-    public void changeConfigurationProtection(object sender, RoutedEventArgs e)
-    {
-      if (canPlanProtectionChange)
-      {
-        var comboBoxOption1 = (ComboBox)this.FindName($"protectSelect");
-        int selectedOption = comboBoxOption1.SelectedIndex;
-        switch (selectedOption)
-        {
-          case 0://None
-            tempPlanCache.protectionActiveType = 0;
-            tempPlanCache.protectionActivePwd = "";
-            tempPlanCache.protectionActiveChar = 0;
-            break;
-          case 1://Delaying
-            tempPlanCache.protectionActiveChar = 0;//Overload of value
-            tempPlanCache.protectionActiveType = 1;
-            break;
-          case 2://Password
-            tempPlanCache.protectionActiveType = 2;
-            //tempPlanCache.protectionActivePwd = "";// Set Later
-            tempPlanCache.protectionActiveChar = 0;
-            break;
-          case 3://Random Characters
-            tempPlanCache.protectionActiveType = 3;
-            tempPlanCache.protectionActiveChar = 0;
-            break;
-          case 4://Forced
-            tempPlanCache.protectionActiveType = 4;
-            break;
-          default:
-            break;
-        }
-        if (currentScreen != "None")
-        {
-          showBasicPlanInformation(false);
-        }
-      }     
+      showSettingsInformation();
     }
 
     // Prepares for entry into the general plan information screen (#1)
-    public void loadFirstPlanScreen(object sender, RoutedEventArgs e)
+    public void preloadFirstPlanScreen(object sender, RoutedEventArgs e)
     {
       Button originButton = sender as Button;
       string contents = (string)originButton.Name;
@@ -384,222 +294,8 @@ namespace IA_GUI
       }
     }
 
-    //
-    // Preliminary automatic detection for all possible password/char/forced screens
-    //
-    public void promptUserProtection(object sender, RoutedEventArgs e)
-    {
-      List<PlanInformation> planData = BackEnd.parsePlans();
-
-      // Determine the entry point of the user, by using button id
-      Button originButton = sender as Button;
-      string contents = (string)originButton.Name;
-
-      // Parse the name to find where to go next, and current plan
-      string finalDirective = "";
-      int planNumber = -1;
-      int counter = 0;
-      foreach (char a in contents)
-      {
-        int ignoreOutput;
-        bool isInt = int.TryParse(a.ToString(), out ignoreOutput);
-        if (isInt)
-        {
-          planNumber = int.Parse(contents.Substring(counter));
-          finalDirective = contents.Remove(counter, contents.Length - counter);
-          break;
-        }
-        counter++;
-      }
-
-      // Set the new
-      currentPlanIndex = planNumber;
-      tempPlanCache = planData[currentPlanIndex - 1];
-
-      // Protection not active 
-      if ((!isCurrentPlanActive(tempPlanCache))||(tempPlanCache.protectionActiveType == 0))
-      {
-        switch (finalDirective)
-        {
-          case "planStop":
-            stopPlan();
-            break;
-          case "planDelete":
-            deletePlan();
-            break;
-          case "planEdit":
-            editPlan();
-            break;
-        }
-      }
-      else // Protection Active
-      {
-        Button submitButton = (Button)this.FindName($"PasswordSubmit");
-        // Deal with protection evels
-        switch (tempPlanCache.protectionActiveType)
-        {
-          case 0: //No protection (Direct Access, See above if statement)
-            break;
-          case 2:
-          case 3: //Password and Random Characters
-                  // Special case with pausing
-            if ((tempPlanCache.returnPausingAllowed)&&(finalDirective == "planStop"))
-            {
-              transitionToStop(sender, e);
-              break;
-            }
-            var inputInstruction = (Label)this.FindName($"TLabel");
-            var userInput = (PasswordBox)this.FindName($"PasswordInput");
-            userInput.Clear(); // Clear previous password
-            var planFrame = (Grid)this.FindName($"password_grid");
-            planFrame.Visibility = Visibility.Visible;
-            var origScreen = (Grid)this.FindName($"plan_grid");
-            origScreen.Visibility = Visibility.Collapsed;
-           
-            if (tempPlanCache.protectionActiveType == 2)
-            {
-              inputInstruction.Content = "Please Enter the Password for This Set:\n";
-            }
-            else
-            {
-              // Generate random string
-              string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";// Set of all characters
-              randomChars = new string(Enumerable.Repeat(chars, tempPlanCache.protectionActiveChar).Select(s => s[random.Next(s.Length)]).ToArray());
-              inputInstruction.Content = "Please Enter the Following Characters:\n" + randomChars;
-            }
-            // Determine the final command of the submit button
-            switch (finalDirective)
-            {
-              case "planStop":
-                submitButton.Click += new RoutedEventHandler(transitionToStop);
-                break;
-              case "planDelete":
-                submitButton.Click += new RoutedEventHandler(transitionToDelete);
-                break;
-              case "planEdit":
-                submitButton.Click += new RoutedEventHandler(transitionToEdit);
-                break;
-            }
-            break;
-          case 1:
-          case 4: // Total Block and Delay
-                  // Special case with pausing
-            if ((tempPlanCache.returnPausingAllowed) && (finalDirective == "planStop"))
-            {
-              transitionToStop(sender, e);
-              break;
-            }
-            var origScreen1 = (Grid)this.FindName($"plan_grid");
-            origScreen1.Visibility = Visibility.Collapsed;
-            var tBlockScreen = (Grid)this.FindName($"blocked_grid");
-            tBlockScreen.Visibility = Visibility.Visible;
-            var labelInstruction = (Label)this.FindName($"BlockLabel");
-            labelInstruction.Content = "You cannot perform this action until\n         this plan becomes inactive\n                    or disabled";
-            break;
-          default:
-            break;
-        }
-      }
-
-    }
-
-    // Delete Button Command
-    public void transitionToDelete(object sender, RoutedEventArgs e)
-    {
-      if (checkLogin())
-      {
-        Button submitButton = (Button)this.FindName($"PasswordSubmit");
-        submitButton.Click -= new RoutedEventHandler(transitionToDelete);
-        deletePlan();
-      }
-    }
-
-    // Stop Button Command
-    public void transitionToStop(object sender, RoutedEventArgs e)
-    {
-      if (checkLogin())
-      {
-        Button submitButton = (Button)this.FindName($"PasswordSubmit");
-        submitButton.Click -= new RoutedEventHandler(transitionToStop);
-        stopPlan();
-      }
-    }
-
-    // Edit Button Command
-    public void transitionToEdit(object sender, RoutedEventArgs e)
-    {
-      if (checkLogin())
-      {
-        Button submitButton = (Button)this.FindName($"PasswordSubmit");
-        submitButton.Click -= new RoutedEventHandler(transitionToEdit);
-        editPlan();
-      }
-    }
-
-    // The following methods below are called from login or can be called standalone
-    // Delete Command
-    public void deletePlan()
-    {
-      BackEnd.deleteEntryPlans(tempPlanCache.idPlan);
-      loadPlansInformation();//Reload
-    }
-
-    // Stop Command
-    public void stopPlan()
-    {
-      tempPlanCache.currentlyActive = 0;
-      BackEnd.updateActivePlans(tempPlanCache);
-      loadPlansInformation();//Reload
-    }
-
-    // Edit Command
-    public void editPlan()
-    {
-      var planFrame = (Grid)this.FindName($"plan_grid");
-      planFrame.Visibility = Visibility.Collapsed;
-      showBasicPlanInformation(true);
-    }
-
-    // Checks the validity of password/chars and returns a boolean
-    public bool checkLogin()
-    {
-      if (tempPlanCache.protectionActiveType == 2)//Password Protection
-      {
-        var planFrame2 = (PasswordBox)this.FindName($"PasswordInput");
-        string inputPwd = planFrame2.Password;
-        if (BackEnd.verifyPassword(inputPwd, tempPlanCache.protectionActivePwd))
-        {
-          var origScreen1 = (Grid)this.FindName($"password_grid");//Remove Screen
-          origScreen1.Visibility = Visibility.Collapsed;
-          return true;
-        }
-        else
-        {
-          System.Windows.MessageBox.Show("Incorrect Password", "Authentication", MessageBoxButton.OK, MessageBoxImage.Information);
-          return false;
-        }
-      }
-      else if (tempPlanCache.protectionActiveType == 3)//Random Characters
-      {
-        var planFrame2 = (PasswordBox)this.FindName($"PasswordInput");
-        string inputPwd = planFrame2.Password;
-        if (inputPwd == randomChars)
-        {
-          var origScreen1 = (Grid)this.FindName($"password_grid");//Remove Screen
-          origScreen1.Visibility = Visibility.Collapsed;
-          return true;
-        }
-        else
-        {
-          System.Windows.MessageBox.Show("Your input has errors!", "Authentication", MessageBoxButton.OK, MessageBoxImage.Information);
-          return false;
-        }
-      }
-      return true;
-    }
-
     // Prepares for entry into block information screen
-    public void loadSecondPlanScreen(object sender, RoutedEventArgs e)
+    public void preloadSecondPlanScreen(object sender, RoutedEventArgs e)
     {
       //Update Password Information
       var descriptionBox1 = (TextBox)this.FindName($"planProtect1");
@@ -639,12 +335,12 @@ namespace IA_GUI
         var planFrame = (Grid)this.FindName($"plan_grid_3");
         planFrame.Visibility = Visibility.Collapsed;
       }
-      
-      showAppInformation();      
+
+      showAppInformation();
     }
 
     // Prepares for entry into timing information screen 
-    public void loadThirdPlanScreen(object sender, RoutedEventArgs e)
+    public void preloadThirdPlanScreen(object sender, RoutedEventArgs e)
     {
       BackEnd.updateEntryPlans(tempPlanCache);
       if (currentScreen == "planSettingsApp")
@@ -656,15 +352,14 @@ namespace IA_GUI
       showTimingInformation();
     }
 
-    // Go back to plan_main screen, from last page of plan editor
-    public void returnToMainPlan(object sender, RoutedEventArgs e)
+    public void preloadReturnToMainPlan(object sender, RoutedEventArgs e)
     {
       // Enable the top menu
-      var top1 = (Button)this.FindName($"GlobalPlan");
+      var top1 = (TabItem)this.FindName($"GlobalPlan");
       top1.IsEnabled = true;
-      var top2 = (Button)this.FindName($"GlobalStat");
+      var top2 = (TabItem)this.FindName($"GlobalStat");
       top2.IsEnabled = true;
-      var top3 = (Button)this.FindName($"GlobalSetting");
+      var top3 = (TabItem)this.FindName($"GlobalSetting");
       top3.IsEnabled = true;
       if (currentScreen == "planSettingsTime")
       {
@@ -689,134 +384,24 @@ namespace IA_GUI
         planFrame.Visibility = Visibility.Collapsed;
       }
 
-      loadPlansInformation();
+      showAllPlans();
     }
 
-    // Change between whitelist and blacklist
-    public void confirmListType(object sender, RoutedEventArgs e)
-    {
-      ComboBox selectionBox = (ComboBox)this.FindName($"listingSelectBox");
-      tempPlanCache.blockMethod = selectionBox.SelectedIndex;
-      showAppInformation();
-    }
 
-    // Start Button Command
-    public void startSelectedPlan(object sender, RoutedEventArgs e)
-    {
-      Button buttonType = sender as Button;
-      string contents = buttonType.Name;
-      currentPlanIndex = int.Parse(contents.Remove(0, 9));
-      List<PlanInformation> planData = BackEnd.parsePlans();
-      //planData.RemoveAt(planData.Count() - 1);// Remove last placeholder entry
-      PlanInformation currentPlan = planData[currentPlanIndex - 1];
-      currentPlan.currentlyActive = 1;
-      BackEnd.updateActivePlans(currentPlan);
-      loadPlansInformation();//Reload
-    }
+    ///
+    /// Screen Loading Process
+    ///
 
-    // Delete all statistics
-    public void resetAllStat(object sender, RoutedEventArgs e)
-    {
-      BackEnd.deleteAllStats();
-      displayStatsInformation();
-    }
-
-    // Delete selected statistic
-    public void deleteCStat(object sender, RoutedEventArgs e)
-    {
-      Button buttonType = sender as Button;
-      string contents = buttonType.Name;
-      int currentPlanIndex2 = int.Parse(contents.Remove(0, 9));//statReset#
-      List<StatsInformation> statData = BackEnd.parseStatistics();
-      //planData.RemoveAt(planData.Count() - 1);// Remove last placeholder entry
-      StatsInformation currentStat = statData[currentPlanIndex2 - 1];
-      BackEnd.deleteEntryStats(currentStat.idApp);
-      displayStatsInformation();//Reload
-    }
-
-    //
-    // General Methods
-    //
-
-    // For ALL Plans, determines if at least one is active and running
-    public bool isPlanActive()
-    {
-      bool activePlan = false;
-      List<PlanInformation> planData = BackEnd.parsePlans();
-      foreach (PlanInformation cPlan in planData)
-      {
-        int timingMethod = cPlan.timingMethod;
-        if (cPlan.currentlyActive == 1)
-        {
-          bool active = false;
-          if (timingMethod == 0)// Normal Schedule
-          {
-            active = CheckScheduledTime(cPlan.activeDays.Split("|"), cPlan.activeTime.Split("|"));
-          }
-          else if (timingMethod == 1)// Pomodoro
-          {
-            try
-            {
-              active = CheckPomoTime(cPlan.activeDays.Split("|"), cPlan.pomoAmount.ToString(), cPlan.pomoDuration.ToString(), cPlan.pomoSetAmount.ToString(),
-              cPlan.pomoSmallBreak.ToString(), cPlan.pomoLargeBreak.ToString(), cPlan.pomoScheduledStart);
-            }
-            catch (Exception e)
-            {
-              active = false;
-            }
-          }
-          if (active)
-          {
-            activePlan = true;
-            break;
-          }
-
-        }
-      }
-      return activePlan;
-    }
-
-    // Determine if a specific plan is active
-    public bool isCurrentPlanActive(PlanInformation cPlan)
-    {
-      if (cPlan.currentlyActive == 0)
-      {
-        return false;
-      }
-      if (cPlan.timingMethod == 0)//Regular Schedule
-      {
-        if (CheckScheduledTime(cPlan.activeDays.Split("|"), cPlan.activeTime.Split("|")))
-        {
-          return true;
-        }
-        else
-        {
-          return false;
-        }
-      }
-      else
-      {
-        if (CheckPomoTime(cPlan.activeDays.Split("|"), cPlan.pomoAmount.ToString(), cPlan.pomoDuration.ToString(), cPlan.pomoSetAmount.ToString(),
-              cPlan.pomoSmallBreak.ToString(), cPlan.pomoLargeBreak.ToString(), cPlan.pomoScheduledStart))
-        {
-          return true;
-        }
-        return false;
-      }
-
-    }
 
     // Main Plan Page (Home)
-    public void loadPlansInformation()
-    { 
+    public void showAllPlans()
+    {
       currentScreen = "planMain";
       // Get Database Information
       var planFrame = (Grid)this.FindName($"plan_grid");
       planFrame.Visibility = Visibility.Visible;
       List<PlanInformation> planData = BackEnd.parsePlans();
-      BrushConverter bc = new BrushConverter();
-      Brush greenColor = (Brush)bc.ConvertFrom("#31bf58");
-      Brush redColor = (Brush)bc.ConvertFrom("#FFFF6347");
+      setUpColors();//Colors must load in time
 
       int numPlans = 1;
       foreach (PlanInformation cPlan in planData)
@@ -844,7 +429,8 @@ namespace IA_GUI
           {
             active = CheckPomoTime(cPlan.activeDays.Split("|"), cPlan.pomoAmount.ToString(), cPlan.pomoDuration.ToString(), cPlan.pomoSetAmount.ToString(),
             cPlan.pomoSmallBreak.ToString(), cPlan.pomoLargeBreak.ToString(), cPlan.pomoScheduledStart);
-          } catch (Exception e)
+          }
+          catch (Exception e)
           {
             active = false;
           }
@@ -907,8 +493,8 @@ namespace IA_GUI
         {
           // Start or stop the plans
           if ((cPlan.currentlyActive == 0))
-          { 
-            startButton.Visibility = Visibility.Visible; 
+          {
+            startButton.Visibility = Visibility.Visible;
             stopButton.Visibility = Visibility.Collapsed;
           }
           else
@@ -944,7 +530,7 @@ namespace IA_GUI
         var nameLabel = (Label)this.FindName($"planName{a}");
         nameLabel.Content = "Empty";
         var activeLabel = (Label)this.FindName($"planActive{a}");
-        activeLabel.Visibility = (System.Windows.Visibility) Enum.Parse(typeof(System.Windows.Visibility), "Collapsed");
+        activeLabel.Visibility = (System.Windows.Visibility)Enum.Parse(typeof(System.Windows.Visibility), "Collapsed");
         var whitelistLabel = (Label)this.FindName($"planWhitelist{a}");
         whitelistLabel.Visibility = Visibility.Collapsed;
         var firewallLabel = (Label)this.FindName($"planFirewall{a}");
@@ -962,7 +548,7 @@ namespace IA_GUI
       }
 
     }
-   
+
     //Plan Page 1 (Description, Method, Kill) Load
     public void showBasicPlanInformation(bool newPlan)
     {
@@ -988,11 +574,11 @@ namespace IA_GUI
       var protectSelectPause = (ToggleButton)this.FindName($"protectSelectPause");
 
       // Disable top menu
-      var top1 = (Button)this.FindName($"GlobalPlan");
+      var top1 = (TabItem)this.FindName($"GlobalPlan");
       top1.IsEnabled = false;
-      var top2 = (Button)this.FindName($"GlobalStat");
+      var top2 = (TabItem)this.FindName($"GlobalStat");
       top2.IsEnabled = false;
-      var top3 = (Button)this.FindName($"GlobalSetting");
+      var top3 = (TabItem)this.FindName($"GlobalSetting");
       top3.IsEnabled = false;
 
 
@@ -1155,17 +741,17 @@ namespace IA_GUI
         case 1: //Pomodoro
           timeSelectBox.SelectedIndex = 1;
           startTimePomo.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
-          smallBreakPomo.GetBindingExpression(TextBox.TextProperty).UpdateTarget(); 
+          smallBreakPomo.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
           largeBreakPomo.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
           pomoAmount.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
           pomoDuration.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
           startTimePomo.Visibility = Visibility.Visible;
           smallBreakPomo.Visibility = Visibility.Visible;
-          largeBreakPomo.Visibility= Visibility.Visible;
-          pomoAmount.Visibility= Visibility.Visible;
-          pomoDuration.Visibility= Visibility.Visible;
+          largeBreakPomo.Visibility = Visibility.Visible;
+          pomoAmount.Visibility = Visibility.Visible;
+          pomoDuration.Visibility = Visibility.Visible;
 
-          startTimePomoLabel.Visibility = Visibility.Visible;          
+          startTimePomoLabel.Visibility = Visibility.Visible;
           startTimePomo.Visibility = Visibility.Visible;
           smallBreakPomoLabel.Visibility = Visibility.Visible;
           largeBreakPomoLabel.Visibility = Visibility.Visible;
@@ -1199,9 +785,9 @@ namespace IA_GUI
       //tempPlanCache.pomoDuration = 500;
 
     }
-     
+
     // Assume that user is on the settings page
-    public void displaySettingsInformation()
+    public void showSettingsInformation()
     {
       // Get Database Information
       // Check for user settings to allow or deny access
@@ -1212,11 +798,12 @@ namespace IA_GUI
 
       foreach (RootInformation cSetting in settingData)
       {
-        if ((cSetting.attributeName == "Global Protection Enabled") && (cSetting.attributeValue=="0"))
+        if ((cSetting.attributeName == "Global Protection Enabled") && (cSetting.attributeValue == "0"))
         {
           canAccessSettings = true;
           break;
-        }else if ((cSetting.attributeName == "Settings Protection") && (cSetting.attributeValue == "0"))
+        }
+        else if ((cSetting.attributeName == "Settings Protection") && (cSetting.attributeValue == "0"))
         {
           canAccessSettings = true;
           break;
@@ -1235,9 +822,6 @@ namespace IA_GUI
         currentScreen = "settingsMain";
         var settingFrame = (Grid)this.FindName($"settings_grid");
         settingFrame.Visibility = Visibility.Visible;
-        BrushConverter bc = new BrushConverter();
-        Brush greenColor = (Brush)bc.ConvertFrom("#31bf58");
-        Brush redColor = (Brush)bc.ConvertFrom("#FFFF6347");
 
         List<int> invisibleAttributes = new List<int>();
         int numSettings = 1;
@@ -1307,7 +891,8 @@ namespace IA_GUI
     }
 
     // Display the statistics screen
-    public void displayStatsInformation() {
+    public void showStatsInformation()
+    {
       // Get Database Information
       // Check for user settings to allow or deny access
 
@@ -1404,13 +989,88 @@ namespace IA_GUI
           }
           numStats2++;
         }
-      } else
+      }
+      else
       { // Access Denied
         currentScreen = "blockedStats";
         var settingFrame = (Grid)this.FindName($"blocked_grid");
         settingFrame.Visibility = Visibility.Visible;
         var activeLabel = (Label)this.FindName($"BlockLabel");
         activeLabel.Content = "You cannot view the Statistics page\nuntil all plans are inactive or disabled";
+      }
+
+    }
+
+
+    ///
+    /// Helper Methods
+    ///
+
+
+    // For ALL Plans, determines if at least one is active and running
+    public bool isPlanActive()
+    {
+      bool activePlan = false;
+      List<PlanInformation> planData = BackEnd.parsePlans();
+      foreach (PlanInformation cPlan in planData)
+      {
+        int timingMethod = cPlan.timingMethod;
+        if (cPlan.currentlyActive == 1)
+        {
+          bool active = false;
+          if (timingMethod == 0)// Normal Schedule
+          {
+            active = CheckScheduledTime(cPlan.activeDays.Split("|"), cPlan.activeTime.Split("|"));
+          }
+          else if (timingMethod == 1)// Pomodoro
+          {
+            try
+            {
+              active = CheckPomoTime(cPlan.activeDays.Split("|"), cPlan.pomoAmount.ToString(), cPlan.pomoDuration.ToString(), cPlan.pomoSetAmount.ToString(),
+              cPlan.pomoSmallBreak.ToString(), cPlan.pomoLargeBreak.ToString(), cPlan.pomoScheduledStart);
+            }
+            catch (Exception e)
+            {
+              active = false;
+            }
+          }
+          if (active)
+          {
+            activePlan = true;
+            break;
+          }
+
+        }
+      }
+      return activePlan;
+    }
+
+    // Determine if a specific plan is active
+    public bool isCurrentPlanActive(PlanInformation cPlan)
+    {
+      if (cPlan.currentlyActive == 0)
+      {
+        return false;
+      }
+      if (cPlan.timingMethod == 0)//Regular Schedule
+      {
+        if (CheckScheduledTime(cPlan.activeDays.Split("|"), cPlan.activeTime.Split("|")))
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
+      }
+      else
+      {
+        if (CheckPomoTime(cPlan.activeDays.Split("|"), cPlan.pomoAmount.ToString(), cPlan.pomoDuration.ToString(), cPlan.pomoSetAmount.ToString(),
+              cPlan.pomoSmallBreak.ToString(), cPlan.pomoLargeBreak.ToString(), cPlan.pomoScheduledStart))
+        {
+          return true;
+        }
+        return false;
       }
 
     }
@@ -1436,7 +1096,7 @@ namespace IA_GUI
             totalTime += Int32.Parse(b);
           }
           double hours = Math.Floor(totalTime / 3600.0);
-          double minutes = Math.Floor((totalTime - hours*3600) / 60.0);
+          double minutes = Math.Floor((totalTime - hours * 3600) / 60.0);
           int seconds = totalTime % 60;
           activeStat.Content = $"{hours}H {minutes}M {seconds}S";
 
@@ -1445,9 +1105,317 @@ namespace IA_GUI
       }
     }
 
-    //
-    //Timing Methods
-    //
+    // Delete Command
+    public void deletePlan()
+    {
+      BackEnd.deleteEntryPlans(tempPlanCache.idPlan);
+      showAllPlans();//Reload
+    }
+
+    // Stop Command
+    public void stopPlan()
+    {
+      tempPlanCache.currentlyActive = 0;
+      BackEnd.updateActivePlans(tempPlanCache);
+      showAllPlans();//Reload
+    }
+
+    // Edit Command
+    public void editPlan()
+    {
+      var planFrame = (Grid)this.FindName($"plan_grid");
+      planFrame.Visibility = Visibility.Collapsed;
+      showBasicPlanInformation(true);
+    }
+
+    // Change between whitelist and blacklist
+    public void confirmListType(object sender, RoutedEventArgs e)
+    {
+      ComboBox selectionBox = (ComboBox)this.FindName($"listingSelectBox");
+      tempPlanCache.blockMethod = selectionBox.SelectedIndex;
+      showAppInformation();
+    }
+
+    // Start Button Command
+    public void startSelectedPlan(object sender, RoutedEventArgs e)
+    {
+      Button buttonType = sender as Button;
+      string contents = buttonType.Name;
+      currentPlanIndex = int.Parse(contents.Remove(0, 9));
+      List<PlanInformation> planData = BackEnd.parsePlans();
+      //planData.RemoveAt(planData.Count() - 1);// Remove last placeholder entry
+      PlanInformation currentPlan = planData[currentPlanIndex - 1];
+      currentPlan.currentlyActive = 1;
+      BackEnd.updateActivePlans(currentPlan);
+      showAllPlans();//Reload
+    }
+
+    // Delete all statistics
+    public void resetAllStat(object sender, RoutedEventArgs e)
+    {
+      BackEnd.deleteAllStats();
+      showStatsInformation();
+    }
+
+    // Delete selected statistic
+    public void deleteCStat(object sender, RoutedEventArgs e)
+    {
+      Button buttonType = sender as Button;
+      string contents = buttonType.Name;
+      int currentPlanIndex2 = int.Parse(contents.Remove(0, 9));//statReset#
+      List<StatsInformation> statData = BackEnd.parseStatistics();
+      //planData.RemoveAt(planData.Count() - 1);// Remove last placeholder entry
+      StatsInformation currentStat = statData[currentPlanIndex2 - 1];
+      BackEnd.deleteEntryStats(currentStat.idApp);
+      showStatsInformation();//Reload
+    }
+
+    // Adds path/name to whitelist boxes
+    public void addPhraseToWhitelist(object sender, RoutedEventArgs e)
+    {
+      OpenFileDialog openFileDialog = new OpenFileDialog();
+      openFileDialog.Filter = "All files (*.*)|*.*"; // You can customize the file filter if needed
+      if (openFileDialog.ShowDialog() == true)
+      {
+        string selectedFilePath = openFileDialog.FileName;
+        selectedFilePath = selectedFilePath.Substring(selectedFilePath.LastIndexOf("\\") + 1);
+        appNameAllowBox.Text = appNameAllowBox.Text + $"\n{selectedFilePath}";
+      }
+    }
+
+    // Adds path/name to blacklist boxes
+    public void addPhraseToBlacklist(object sender, RoutedEventArgs e)
+    {
+      OpenFileDialog openFileDialog = new OpenFileDialog();
+      openFileDialog.Filter = "All files (*.*)|*.*"; // You can customize the file filter if needed
+      if (openFileDialog.ShowDialog() == true)
+      {
+        string selectedFilePath = openFileDialog.FileName;
+        selectedFilePath = selectedFilePath.Substring(selectedFilePath.LastIndexOf("\\") + 1);
+        appNameBlockBox.Text = appNameAllowBox.Text + $"\n{selectedFilePath}";
+      }
+    }
+
+    // Adds path/name to whitelist boxes
+    //public void addPathToWhitelist(object sender, RoutedEventArgs e)
+    //{
+    //  using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+    //  {
+    //    System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+    //  }
+    //}
+
+    //// Adds path/name to blacklist boxes
+    //public void addPathToBlacklist(object sender, RoutedEventArgs e)
+    //{
+    //  DialogResult result = dialog.ShowDialog();
+    //  if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
+    //  {
+    //    string selectedFolder = dialog.SelectedPath;
+    //    // Do something with the selected folder path
+    //    // For example, display it in a text box:
+    //    // textBoxFolderPath.Text = selectedFolder;
+    //  }
+    //}
+
+
+    ///
+    /// Preliminary automatic detection for all possible password/char/forced screens
+    ///
+
+
+    public void promptUserProtection(object sender, RoutedEventArgs e)
+    {
+      List<PlanInformation> planData = BackEnd.parsePlans();
+
+      // Determine the entry point of the user, by using button id
+      Button originButton = sender as Button;
+      string contents = (string)originButton.Name;
+
+      // Parse the name to find where to go next, and current plan
+      string finalDirective = "";
+      int planNumber = -1;
+      int counter = 0;
+      foreach (char a in contents)
+      {
+        int ignoreOutput;
+        bool isInt = int.TryParse(a.ToString(), out ignoreOutput);
+        if (isInt)
+        {
+          planNumber = int.Parse(contents.Substring(counter));
+          finalDirective = contents.Remove(counter, contents.Length - counter);
+          break;
+        }
+        counter++;
+      }
+
+      // Set the new
+      currentPlanIndex = planNumber;
+      tempPlanCache = planData[currentPlanIndex - 1];
+
+      // Protection not active 
+      if ((!isCurrentPlanActive(tempPlanCache)) || (tempPlanCache.protectionActiveType == 0))
+      {
+        switch (finalDirective)
+        {
+          case "planStop":
+            stopPlan();
+            break;
+          case "planDelete":
+            deletePlan();
+            break;
+          case "planEdit":
+            editPlan();
+            break;
+        }
+      }
+      else // Protection Active
+      {
+        Button submitButton = (Button)this.FindName($"PasswordSubmit");
+        // Deal with protection evels
+        switch (tempPlanCache.protectionActiveType)
+        {
+          case 0: //No protection (Direct Access, See above if statement)
+            break;
+          case 2:
+          case 3: //Password and Random Characters
+                  // Special case with pausing
+            if ((tempPlanCache.returnPausingAllowed) && (finalDirective == "planStop"))
+            {
+              transitionToStop(sender, e);
+              break;
+            }
+            var inputInstruction = (Label)this.FindName($"TLabel");
+            var userInput = (PasswordBox)this.FindName($"PasswordInput");
+            userInput.Clear(); // Clear previous password
+            var planFrame = (Grid)this.FindName($"password_grid");
+            planFrame.Visibility = Visibility.Visible;
+            var origScreen = (Grid)this.FindName($"plan_grid");
+            origScreen.Visibility = Visibility.Collapsed;
+
+            if (tempPlanCache.protectionActiveType == 2)
+            {
+              inputInstruction.Content = "Please Enter the Password for This Set:\n";
+            }
+            else
+            {
+              // Generate random string
+              string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";// Set of all characters
+              randomChars = new string(Enumerable.Repeat(chars, tempPlanCache.protectionActiveChar).Select(s => s[random.Next(s.Length)]).ToArray());
+              inputInstruction.Content = "Please Enter the Following Characters:\n" + randomChars;
+            }
+            // Determine the final command of the submit button
+            switch (finalDirective)
+            {
+              case "planStop":
+                submitButton.Click += new RoutedEventHandler(transitionToStop);
+                break;
+              case "planDelete":
+                submitButton.Click += new RoutedEventHandler(transitionToDelete);
+                break;
+              case "planEdit":
+                submitButton.Click += new RoutedEventHandler(transitionToEdit);
+                break;
+            }
+            break;
+          case 1:
+          case 4: // Total Block and Delay
+                  // Special case with pausing
+            if ((tempPlanCache.returnPausingAllowed) && (finalDirective == "planStop"))
+            {
+              transitionToStop(sender, e);
+              break;
+            }
+            var origScreen1 = (Grid)this.FindName($"plan_grid");
+            origScreen1.Visibility = Visibility.Collapsed;
+            var tBlockScreen = (Grid)this.FindName($"blocked_grid");
+            tBlockScreen.Visibility = Visibility.Visible;
+            var labelInstruction = (Label)this.FindName($"BlockLabel");
+            labelInstruction.Content = "You cannot perform this action until\n         this plan becomes inactive\n                    or disabled";
+            break;
+          default:
+            break;
+        }
+      }
+
+    }
+
+    // Delete Button Command
+    public void transitionToDelete(object sender, RoutedEventArgs e)
+    {
+      if (checkLogin())
+      {
+        Button submitButton = (Button)this.FindName($"PasswordSubmit");
+        submitButton.Click -= new RoutedEventHandler(transitionToDelete);
+        deletePlan();
+      }
+    }
+
+    // Stop Button Command
+    public void transitionToStop(object sender, RoutedEventArgs e)
+    {
+      if (checkLogin())
+      {
+        Button submitButton = (Button)this.FindName($"PasswordSubmit");
+        submitButton.Click -= new RoutedEventHandler(transitionToStop);
+        stopPlan();
+      }
+    }
+
+    // Edit Button Command
+    public void transitionToEdit(object sender, RoutedEventArgs e)
+    {
+      if (checkLogin())
+      {
+        Button submitButton = (Button)this.FindName($"PasswordSubmit");
+        submitButton.Click -= new RoutedEventHandler(transitionToEdit);
+        editPlan();
+      }
+    }
+
+    // Checks the validity of password/chars and returns a boolean
+    public bool checkLogin()
+    {
+      if (tempPlanCache.protectionActiveType == 2)//Password Protection
+      {
+        var planFrame2 = (PasswordBox)this.FindName($"PasswordInput");
+        string inputPwd = planFrame2.Password;
+        if (BackEnd.verifyPassword(inputPwd, tempPlanCache.protectionActivePwd))
+        {
+          var origScreen1 = (Grid)this.FindName($"password_grid");//Remove Screen
+          origScreen1.Visibility = Visibility.Collapsed;
+          return true;
+        }
+        else
+        {
+          System.Windows.MessageBox.Show("Incorrect Password", "Authentication", MessageBoxButton.OK, MessageBoxImage.Information);
+          return false;
+        }
+      }
+      else if (tempPlanCache.protectionActiveType == 3)//Random Characters
+      {
+        var planFrame2 = (PasswordBox)this.FindName($"PasswordInput");
+        string inputPwd = planFrame2.Password;
+        if (inputPwd == randomChars)
+        {
+          var origScreen1 = (Grid)this.FindName($"password_grid");//Remove Screen
+          origScreen1.Visibility = Visibility.Collapsed;
+          return true;
+        }
+        else
+        {
+          System.Windows.MessageBox.Show("Your input has errors!", "Authentication", MessageBoxButton.OK, MessageBoxImage.Information);
+          return false;
+        }
+      }
+      return true;
+    }
+
+
+    ///
+    /// Timing Methods
+    ///
+
 
     // Check if within current time limit (Scheduled Times)
     public static bool CheckScheduledTime(string[] scheduledDays, string[] scheduledTime)
@@ -1600,7 +1568,11 @@ namespace IA_GUI
     }
 
 
-    // Unrelated Event Handlers
+    ///
+    /// Other Event Handlers
+    ///
+
+
     // Toggle Button
     public void HandleCheck(object sender, RoutedEventArgs e)
     {
@@ -1613,6 +1585,101 @@ namespace IA_GUI
     {
       ToggleButton tButton = sender as ToggleButton;
       tButton.Content = "Off";
+    }
+
+    // Event handler for changing global statistics settings (switching between daily and weekly)
+    public void changeConfigurationStat(object sender, RoutedEventArgs e)
+    {// Make sure not to select any option by default
+      var comboBoxOption1 = (ComboBoxItem)this.FindName($"timeChoice1");
+      bool firstOption = comboBoxOption1.IsSelected;
+      List<StatsInformation> statData = BackEnd.parseStatistics();
+      if (firstOption)
+      {
+        ApplyTemplate();
+        int numStats2 = 1;
+        foreach (StatsInformation cStat in statData)
+        {
+          if (numStats2 <= statData.Count())
+          {
+            var activeStat3 = (Label)this.FindName($"statTime{numStats2}");
+            if (activeStat3 == null)
+            {
+              continue;
+            }
+            // Read and parse data
+            int processCDay = cStat.processCDay;
+            double hours = Math.Floor(processCDay / 3600.0);
+            double minutes = Math.Floor(processCDay / 60.0);
+            int seconds = processCDay % 60;
+            activeStat3.Content = $"{hours}H {minutes}M {seconds}S";
+          }
+          numStats2++;
+        }
+      }
+      else
+      {
+        showWeekStat(statData);
+      }
+    }
+
+    // For reloading with different timing methods inside of plans
+    public void changeConfigurationTiming(object sender, RoutedEventArgs e)
+    {
+      var comboBoxOption1 = (ComboBox)this.FindName($"timeSelect");
+      int selectedOption = comboBoxOption1.SelectedIndex;
+      switch (selectedOption)
+      {
+        case 0://Scheduled
+          tempPlanCache.timingMethod = 0;
+          break;
+        case 1://Pomodoro
+          tempPlanCache.timingMethod = 1;
+          break;
+        default:
+          break;
+      }
+
+      showTimingInformation();
+    }
+
+    // ComboxBox Trigger: For changing protection in Plan General Screen (planScreen1), changes text boxes
+    public void changeConfigurationProtection(object sender, RoutedEventArgs e)
+    {
+      if (canPlanProtectionChange)
+      {
+        var comboBoxOption1 = (ComboBox)this.FindName($"protectSelect");
+        int selectedOption = comboBoxOption1.SelectedIndex;
+        switch (selectedOption)
+        {
+          case 0://None
+            tempPlanCache.protectionActiveType = 0;
+            tempPlanCache.protectionActivePwd = "";
+            tempPlanCache.protectionActiveChar = 0;
+            break;
+          case 1://Delaying
+            tempPlanCache.protectionActiveChar = 0;//Overload of value
+            tempPlanCache.protectionActiveType = 1;
+            break;
+          case 2://Password
+            tempPlanCache.protectionActiveType = 2;
+            //tempPlanCache.protectionActivePwd = "";// Set Later
+            tempPlanCache.protectionActiveChar = 0;
+            break;
+          case 3://Random Characters
+            tempPlanCache.protectionActiveType = 3;
+            tempPlanCache.protectionActiveChar = 0;
+            break;
+          case 4://Forced
+            tempPlanCache.protectionActiveType = 4;
+            break;
+          default:
+            break;
+        }
+        if (currentScreen != "None")
+        {
+          showBasicPlanInformation(false);
+        }
+      }
     }
 
   }
