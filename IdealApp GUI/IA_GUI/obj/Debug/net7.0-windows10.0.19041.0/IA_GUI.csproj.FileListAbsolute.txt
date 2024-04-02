@@ -45,10 +45,10 @@ C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp GUI\IA_GUI\obj\Debug
 C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp GUI\IA_GUI\obj\Debug\net7.0-windows10.0.19041.0\IA_GUI.AssemblyInfoInputs.cache
 C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp GUI\IA_GUI\obj\Debug\net7.0-windows10.0.19041.0\IA_GUI.AssemblyInfo.cs
 C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp GUI\IA_GUI\obj\Debug\net7.0-windows10.0.19041.0\IA_GUI.csproj.CoreCompileInputs.cache
-C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp GUI\IA_GUI\obj\Debug\net7.0-windows10.0.19041.0\IA_GUI.csproj.CopyComplete
 C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp GUI\IA_GUI\obj\Debug\net7.0-windows10.0.19041.0\IA_GUI.dll
 C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp GUI\IA_GUI\obj\Debug\net7.0-windows10.0.19041.0\refint\IA_GUI.dll
 C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp GUI\IA_GUI\obj\Debug\net7.0-windows10.0.19041.0\IA_GUI.pdb
 C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp GUI\IA_GUI\obj\Debug\net7.0-windows10.0.19041.0\IA_GUI.genruntimeconfig.cache
 C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp GUI\IA_GUI\obj\Debug\net7.0-windows10.0.19041.0\ref\IA_GUI.dll
 C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp GUI\IA_GUI\obj\Debug\net7.0-windows10.0.19041.0\IA_GUI.sourcelink.json
+C:\Users\MD3728\Documents\Programming\C#\Ideal_App\IdealApp GUI\IA_GUI\obj\Debug\net7.0-windows10.0.19041.0\IA_GUI.csproj.Up2Date

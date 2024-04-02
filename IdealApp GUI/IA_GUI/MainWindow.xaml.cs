@@ -25,6 +25,8 @@ using Xceed.Wpf.Toolkit;
 using System.Threading;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
+using System.Windows.Media.Animation;
+using Windows.System;
 
 // Dependencies that are necessary for this to run
 // System.Security.Cryptography;
@@ -38,14 +40,8 @@ using Microsoft.Win32;
 // if exist "$(TargetPath).locked" del "$(TargetPath).locked"
 // if exist "$(TargetPath)" if not exist "$(TargetPath).locked" move "$(TargetPath)" "$(TargetPath).locked"  
 
-// Name of Pages:
-// planMain (Main Screen: Plans tab)
-// statsMain (Main Screen )
-// settingsMain
-// planSettingsMain: First screen of each plan
-// planSettingsApp: Second screen of each plan
-// planSettings Time: Third screen of each plan
-// password: Password Screen
+// Stuff to fix: textboxes, combobox rounding, togglebutton appearance, merge naming system with ID system, code cleanup
+
 
 namespace IA_GUI
 {
@@ -65,12 +61,15 @@ namespace IA_GUI
     // Globals
     public string currentScreen = "None";
     public RootInformation rootSettings = new RootInformation();
-    public int currentPlanIndex = 1;
-    public PlanInformation tempPlanCache = new PlanInformation();
+    public int currentPlanIndex = 1; // Keeps track of current plan
+    public PlanInformation tempPlanCache = new PlanInformation(); // Most up to date plan infromation
     public string randomChars = "";
-    public bool moveOn = false;
 
-    // Event Suppressor
+    // Screen Transition Indicators
+    public bool inScreenTransition = false; // Prevents multiple screen changes at once
+    public bool firstScreenTransition = true; // Deals with the always broken first transition 
+
+    // Event Suppressor (During Initial App Launch)
     public bool canPlanProtectionChange = true; // Prevents selection event from occuring
 
     // Constants for GUI
@@ -80,7 +79,6 @@ namespace IA_GUI
     // Constants for Color
     Brush greenColor;
     Brush redColor;
-
 
     // Property to allow for bindings (Plans)
     public PlanInformation returnTempPlanCache {
@@ -114,10 +112,6 @@ namespace IA_GUI
     {
       // Boilerplate
       InitializeComponent();
-
-      //Initial Screen
-      currentScreen = "planMain";
-      showAllPlans();
     }
 
     public void setUpColors()
@@ -128,110 +122,125 @@ namespace IA_GUI
       redColor = (Brush)bc.ConvertFrom("#FFFF6347");
     }
 
+    // Run on window load
+    public void defaultTransition(object sender, RoutedEventArgs e)
+    {
+      all_plans_grid.Visibility = Visibility.Collapsed;
+      currentScreen = "all_plans_grid";
+      preloadMainPlanScreen(null, null);
+    }
+
 
     ///
     /// Preliminary Loading Process
     ///
 
 
+    // Saves settings state after leaving
+    public void saveSettingsData()
+    {
+      // Save settings information
+      List<RootInformation> settingData = BackEnd.parseAppData();
+      int attributeCounter = 1;
+      int buttonCounter = 1;// Correlates with button numbers
+      foreach (RootInformation cSetting in settingData)
+      {
+        if (cSetting.canModify == 0)
+        {// Unseen attributes
+          attributeCounter++;
+          continue;
+        }
+        var CSButton = (ToggleButton)this.FindName($"settingToggle{buttonCounter}");
+        if (CSButton.IsChecked == true)
+        {
+          cSetting.attributeValue = "1";
+        }
+        else
+        {
+          cSetting.attributeValue = "0";
+        }
+        buttonCounter++;
+        attributeCounter++;
+        BackEnd.updateEntrySettings(cSetting);
+      }
+    }
+
+    // Transition from one screen to another
+    public void transitionScreenFade(String initialScreen, String finalScreen)
+    {
+      if (!inScreenTransition)
+      {
+
+        inScreenTransition = true;
+        var originalFrame = (Grid)this.FindName(initialScreen);
+        var finalFrame = (Grid)this.FindName(finalScreen);
+
+        firstScreenTransition = false;
+
+        if (!firstScreenTransition)
+        {
+          Storyboard fadeOut = Resources["FadeOut"] as Storyboard;
+          fadeOut.Completed += (s, e) =>
+          {
+            originalFrame.Visibility = Visibility.Collapsed;// Make visibility obvious
+            finalFrame.Visibility = Visibility.Visible;
+            Storyboard fadeIn = Resources["FadeIn"] as Storyboard;
+            fadeIn.Completed += (s, e) =>
+            {
+              inScreenTransition = false;
+            };
+            fadeIn.Begin(finalFrame);
+
+          };
+          fadeOut.Begin(originalFrame);
+        }
+        // else // Fix first screen transition error
+        // {
+        //   finalFrame.Visibility = Visibility.Visible;
+        //   Storyboard fadeIn = this.Resources["FadeIn"] as Storyboard;
+        //   Storyboard fadeOut = this.Resources["FadeOut"] as Storyboard;
+        //   fadeOut.Begin(finalFrame);
+        //   fadeIn.Begin(finalFrame);
+        //   inScreenTransition = false;
+        //   firstScreenTransition = false;
+        // }
+        
+      }
+    }
+
     // Prepares entry into the initial screen (all plans)
     public void preloadMainPlanScreen(object sender, RoutedEventArgs e)
     {
-      // Attempt to remove eventhandlers
-      var submitButton = (Button)this.FindName("PasswordSubmit");
-      try { submitButton.Click -= new RoutedEventHandler(transitionToDelete); } catch (Exception ex) { }
-      try { submitButton.Click -= new RoutedEventHandler(transitionToEdit); } catch (Exception ex) { }
-      try { submitButton.Click -= new RoutedEventHandler(transitionToStop); } catch (Exception ex) { }
+      // Attempt to remove event handlers from password submission
+      try { PasswordSubmit.Click -= new RoutedEventHandler(transitionToDelete); } catch (Exception ex) { }
+      try { PasswordSubmit.Click -= new RoutedEventHandler(transitionToEdit); } catch (Exception ex) { }
+      try { PasswordSubmit.Click -= new RoutedEventHandler(transitionToStop); } catch (Exception ex) { }
 
-      if (currentScreen == "planSettingsMain")
+      // Screen transition
+      switch (currentScreen)
       {
-        var planFrame = (Grid)this.FindName($"password_grid");
-        planFrame.Visibility = Visibility.Collapsed;
-      }
-      if (currentScreen == "statsMain")
-      {
-        var planFrame = (Grid)this.FindName($"stats_grid");
-        planFrame.Visibility = Visibility.Collapsed;
-      }
-      else if (currentScreen == "settingsMain")
-      {
-        // Update to proper settings
-        List<RootInformation> settingData = BackEnd.parseAppData();
-        int attributeCounter = 1;
-        int buttonCounter = 1;// Correlates with button numbers
-        foreach (RootInformation cSetting in settingData)
-        {
-          if (cSetting.canModify == 0)
-          {// Unseen attributes
-            attributeCounter++;
-            continue;
-          }
-          var CSButton = (ToggleButton)this.FindName($"settingToggle{buttonCounter}");
-          if (CSButton.IsChecked == true)
-          {
-            cSetting.attributeValue = "1";
-          }
-          else
-          {
-            cSetting.attributeValue = "0";
-          }
-          buttonCounter++;
-          attributeCounter++;
-          BackEnd.updateEntrySettings(cSetting);
-        }
-        var planFrame = (Grid)this.FindName($"settings_grid");
-        planFrame.Visibility = Visibility.Collapsed;
-      }
+        case "settings_grid":
+          saveSettingsData();
+          transitionScreenFade("settings_grid", "all_plans_grid");
+          break;
+        default:
+          transitionScreenFade(currentScreen, "all_plans_grid"); break;
 
-      // For blockedStats, blockedSettings, and all other password screens
-      var blockFrame = (Grid)this.FindName($"password_grid");
-      blockFrame.Visibility = Visibility.Collapsed;
-      var blockFrame2 = (Grid)this.FindName($"blocked_grid");
-      blockFrame2.Visibility = Visibility.Collapsed;
+      }
       showAllPlans();
     }
 
     // Prepares entry into statistics screen
     public void preloadStatsScreen(object sender, RoutedEventArgs e)
     {
-      if (currentScreen == "planMain")
+      switch (currentScreen)
       {
-        var planFrame = (Grid)this.FindName($"plan_grid");
-        planFrame.Visibility = Visibility.Collapsed;
-      }
-      else if (currentScreen == "settingsMain")
-      {
-        // Update to proper settings
-        List<RootInformation> settingData = BackEnd.parseAppData();
-        int attributeCounter = 1;
-        int buttonCounter = 1;// Correlates with button numbers
-        foreach (RootInformation cSetting in settingData)
-        {
-          if (cSetting.canModify == 0)
-          {// Unseen attributes
-            attributeCounter++;
-            continue;
-          }
-          var CSButton = (ToggleButton)this.FindName($"settingToggle{buttonCounter}");
-          if (CSButton.IsChecked == true)
-          {
-            cSetting.attributeValue = "1";
-          }
-          else
-          {
-            cSetting.attributeValue = "0";
-          }
-          buttonCounter++;
-          attributeCounter++;
-          BackEnd.updateEntrySettings(cSetting);
-        }
-        var planFrame = (Grid)this.FindName($"settings_grid");
-        planFrame.Visibility = Visibility.Collapsed;
-
-      }else if (currentScreen == "blockedSettings")
-      {
-        var blockFrame = (Grid)this.FindName($"blocked_grid");
-        blockFrame.Visibility = Visibility.Collapsed;
+        case "settings_grid":
+          saveSettingsData();
+          transitionScreenFade("settings_grid", "stats_grid");
+          break;
+        default:
+          transitionScreenFade(currentScreen, "stats_grid"); break;
       }
       showStatsInformation();
     }
@@ -239,47 +248,34 @@ namespace IA_GUI
     // Prepares entry into global settings screen
     public void preloadSettingsScreen(object sender, RoutedEventArgs e)
     {
-      if (currentScreen == "statsMain")
+      switch (currentScreen)
       {
-        ApplyTemplate();
-        var planFrame = (Grid)this.FindName($"stats_grid");
-        planFrame.Visibility = Visibility.Collapsed;
+        case "settings_grid":
+          saveSettingsData();
+          transitionScreenFade("settings_grid", "settings_grid");
+          break;
+        default:
+          transitionScreenFade(currentScreen, "settings_grid"); break;
       }
-      else if (currentScreen == "planMain")
-      {
-        var planFrame = (Grid)this.FindName($"plan_grid");
-        planFrame.Visibility = Visibility.Collapsed;
-      }
-      else if (currentScreen == "blockedStats")
-      {
-        var blockFrame = (Grid)this.FindName($"blocked_grid");
-        blockFrame.Visibility = Visibility.Collapsed;
-      }
-      var blockFrame2 = (Grid)this.FindName($"password_grid");
-      blockFrame2.Visibility = Visibility.Collapsed;
       showSettingsInformation();
     }
 
     // Prepares for entry into the general plan information screen (#1)
     public void preloadFirstPlanScreen(object sender, RoutedEventArgs e)
     {
+      // Necessary for startup
       Button originButton = sender as Button;
       string contents = (string)originButton.Name;
 
-      List<PlanInformation> planData = BackEnd.parsePlans();
-      if (currentScreen == "planSettingsApp")
+      // Transition to screen
+      switch (currentScreen)
       {
-        var planFrame = (Grid)this.FindName($"plan_grid_2");
-        planFrame.Visibility = Visibility.Collapsed;
-      }
-      else if (currentScreen == "planMain")
-      {
-        var planFrame = (Grid)this.FindName($"plan_grid");
-        planFrame.Visibility = Visibility.Collapsed;
+        default:
+          transitionScreenFade(currentScreen, "plan_grid_1"); break;
       }
 
       // Determine whether to create a new plan
-      if (contents.Remove(10) == "planCreate")// New Plan (from planMain screen)
+      if (contents.Remove(10) == "planCreate")// New Plan (from all_plans_grid screen)
       {
         tempPlanCache = new PlanInformation();
         showBasicPlanInformation(true);
@@ -310,32 +306,17 @@ namespace IA_GUI
 
       // General Update
       BackEnd.updateEntryPlans(tempPlanCache);
-      //Transition
-      if (currentScreen == "planSettingsMain")
-      {
-        var planFrame = (Grid)this.FindName($"plan_grid_1");
-        planFrame.Visibility = Visibility.Collapsed;
-      }
-      else if (currentScreen == "planSettingsTime")
-      {
-        // Update the checkboxes from the third screen
-        string timeString = "";
-        for (int a = 1; a < 8; a++)
-        {
-          var cCheck = (CheckBox)this.FindName($"day{a}");
-          if (cCheck.IsChecked == true)
-          {
-            if (timeString.Length >= 1)
-            {
-              timeString += "|";
-            }
-            timeString += $"{a}";
-          }
-        }
-        var planFrame = (Grid)this.FindName($"plan_grid_3");
-        planFrame.Visibility = Visibility.Collapsed;
-      }
 
+      // Transition to screen
+      switch (currentScreen)
+      {
+        case "plan_grid_3":
+          savePlanTimingSchedule();
+          transitionScreenFade(currentScreen, "plan_grid_2");
+          break;
+        default:
+          transitionScreenFade(currentScreen, "plan_grid_2"); break;
+      }
       showAppInformation();
     }
 
@@ -343,48 +324,57 @@ namespace IA_GUI
     public void preloadThirdPlanScreen(object sender, RoutedEventArgs e)
     {
       BackEnd.updateEntryPlans(tempPlanCache);
-      if (currentScreen == "planSettingsApp")
+      // Transition to screen
+      switch (currentScreen)
       {
-        var planFrame = (Grid)this.FindName($"plan_grid_2");
-        planFrame.Visibility = Visibility.Collapsed;
+        default:
+          transitionScreenFade(currentScreen, "plan_grid_3"); break;
       }
-
       showTimingInformation();
     }
 
     public void preloadReturnToMainPlan(object sender, RoutedEventArgs e)
     {
       // Enable the top menu
-      var top1 = (TabItem)this.FindName($"GlobalPlan");
-      top1.IsEnabled = true;
-      var top2 = (TabItem)this.FindName($"GlobalStat");
-      top2.IsEnabled = true;
-      var top3 = (TabItem)this.FindName($"GlobalSetting");
-      top3.IsEnabled = true;
-      if (currentScreen == "planSettingsTime")
-      {
-        // Update the checkboxes from the third screen
-        string timeString = "";
-        for (int a = 1; a < 8; a++)
-        {
-          var cCheck = (CheckBox)this.FindName($"day{a}");
-          if (cCheck.IsChecked == true)
-          {
-            if (timeString.Length >= 1)
-            {
-              timeString += "|";
-            }
-            timeString += $"{a}";
-          }
-        }
-        tempPlanCache.activeDays = timeString;
-        BackEnd.updateEntryPlans(tempPlanCache);//Final Update
+      GlobalPlan.IsEnabled = true;
+      GlobalStat.IsEnabled = true;
+      GlobalSetting.IsEnabled = true;
+      GlobalStat.Visibility = Visibility.Visible;
+      GlobalSetting.Visibility = Visibility.Visible;
 
-        var planFrame = (Grid)this.FindName($"plan_grid_3");
-        planFrame.Visibility = Visibility.Collapsed;
+      // Transition to screen
+      switch (currentScreen)
+      {
+        case "plan_grid_3":
+          savePlanTimingSchedule();
+          transitionScreenFade(currentScreen, "all_plans_grid");
+          break;
+        default:
+          transitionScreenFade(currentScreen,"all_plans_grid"); break;
       }
 
       showAllPlans();
+    }
+
+    // From screen 3
+    public void savePlanTimingSchedule()
+    {
+      // Update the checkboxes from the third screen
+      string timeString = "";
+      for (int a = 1; a < 8; a++)
+      {
+        var cCheck = (CheckBox)this.FindName($"day{a}");
+        if (cCheck.IsChecked == true)
+        {
+          if (timeString.Length >= 1)
+          {
+            timeString += "|";
+          }
+          timeString += $"{a}";
+        }
+      }
+      tempPlanCache.activeDays = timeString;
+      BackEnd.updateEntryPlans(tempPlanCache);//Final Update
     }
 
 
@@ -396,10 +386,8 @@ namespace IA_GUI
     // Main Plan Page (Home)
     public void showAllPlans()
     {
-      currentScreen = "planMain";
+      currentScreen = "all_plans_grid";
       // Get Database Information
-      var planFrame = (Grid)this.FindName($"plan_grid");
-      planFrame.Visibility = Visibility.Visible;
       List<PlanInformation> planData = BackEnd.parsePlans();
       setUpColors();//Colors must load in time
 
@@ -458,13 +446,13 @@ namespace IA_GUI
         if (whitelist)
         {
           var activeLabel2 = (Label)this.FindName($"planWhitelist{numPlans}");
-          activeLabel2.Background = greenColor;
+          //activeLabel2.Background = greenColor;
           activeLabel2.Content = "Whitelisting";
         }
         else
         {
           var activeLabel2 = (Label)this.FindName($"planWhitelist{numPlans}");
-          activeLabel2.Background = redColor;
+          //activeLabel2.Background = redColor;
           activeLabel2.Content = "Blacklisting";
         }
 
@@ -472,13 +460,13 @@ namespace IA_GUI
         if (firewall)
         {
           var activeLabel2 = (Label)this.FindName($"planFirewall{numPlans}");
-          activeLabel2.Background = greenColor;
+          //activeLabel2.Background = greenColor;
           activeLabel2.Content = "Firewall";
         }
         else // Regular Blocking
         {
           var activeLabel2 = (Label)this.FindName($"planFirewall{numPlans}");
-          activeLabel2.Background = redColor;
+          //activeLabel2.Background = redColor;
           activeLabel2.Content = "Kill Process";
         }
 
@@ -525,6 +513,7 @@ namespace IA_GUI
       }
 
       // Make unused plans invisible
+      bool createShown = false;
       for (int a = numPlans; a <= 12; a++)
       {
         var nameLabel = (Label)this.FindName($"planName{a}");
@@ -537,8 +526,17 @@ namespace IA_GUI
         firewallLabel.Visibility = Visibility.Collapsed;
         var deleteButton = (Button)this.FindName($"planDelete{a}");
         deleteButton.Visibility = Visibility.Collapsed;
-        var createButton = (Button)this.FindName($"planCreate{a}");
-        createButton.Visibility = Visibility.Visible;
+        if (!createShown)
+        {
+          var createButton = (Button)this.FindName($"planCreate{a}");
+          createButton.Visibility = Visibility.Visible;
+          createShown = true;
+        }
+        else
+        {
+          var createButton = (Button)this.FindName($"planCreate{a}");
+          createButton.Visibility = Visibility.Collapsed;
+        }
         var editButton = (Button)this.FindName($"planEdit{a}");
         editButton.Visibility = Visibility.Collapsed;
         var startButton = (Button)this.FindName($"planStart{a}");
@@ -552,65 +550,45 @@ namespace IA_GUI
     //Plan Page 1 (Description, Method, Kill) Load
     public void showBasicPlanInformation(bool newPlan)
     {
-      //int x = tempPlanCache.idPlan;
-      // Get Database Information
-      var planSettingFrame = (Grid)this.FindName($"plan_grid_1");
-      planSettingFrame.Visibility = Visibility.Visible;
-
       // All Grid Objects
-      currentScreen = "planSettingsMain";
-      // Get Database Information
-      var nameBox = (TextBox)this.FindName($"planNameBox");
-      var descriptionBox = (TextBox)this.FindName($"planDescriptionBox");
-
-      var descriptionBox1 = (TextBox)this.FindName($"planProtect1");//Password
-      var descriptionBox2 = (TextBox)this.FindName($"planProtect2");//Random Characters
-      var descriptionBox3 = (TextBox)this.FindName($"planProtect3");//Delay
-
-      var defaultKillSelect1 = (ComboBox)this.FindName($"killSelect");
-      var defaultProtectSelect1 = (ComboBox)this.FindName($"protectSelect");
-
-      var protectSelectAllow = (ToggleButton)this.FindName($"protectSelectAllow");
-      var protectSelectPause = (ToggleButton)this.FindName($"protectSelectPause");
+      currentScreen = "plan_grid_1";
 
       // Disable top menu
-      var top1 = (TabItem)this.FindName($"GlobalPlan");
-      top1.IsEnabled = false;
-      var top2 = (TabItem)this.FindName($"GlobalStat");
-      top2.IsEnabled = false;
-      var top3 = (TabItem)this.FindName($"GlobalSetting");
-      top3.IsEnabled = false;
-
+      GlobalPlan.IsEnabled = false;
+      GlobalStat.IsEnabled = false;
+      GlobalSetting.IsEnabled = false;
+      GlobalStat.Visibility = Visibility.Hidden;
+      GlobalSetting.Visibility = Visibility.Hidden;
 
       // Create default entry or use old entry, then update all of the boxes
-      nameBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
-      descriptionBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
-      defaultKillSelect1.GetBindingExpression(ComboBox.SelectedIndexProperty).UpdateTarget();
+      planNameBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
+      planDescriptionBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
+      killSelect.GetBindingExpression(ComboBox.SelectedIndexProperty).UpdateTarget();
       canPlanProtectionChange = false;
-      defaultProtectSelect1.GetBindingExpression(ComboBox.SelectedIndexProperty).UpdateTarget();
+      protectSelect.GetBindingExpression(ComboBox.SelectedIndexProperty).UpdateTarget();
       canPlanProtectionChange = true;
       protectSelectAllow.GetBindingExpression(ToggleButton.IsCheckedProperty).UpdateTarget();
       protectSelectPause.GetBindingExpression(ToggleButton.IsCheckedProperty).UpdateTarget();
 
       // Visibility of various user inputs
-      if (descriptionBox1 != null)
+      if (planProtect1 != null)
       {
-        descriptionBox1.Visibility = Visibility.Collapsed;
-        descriptionBox2.Visibility = Visibility.Collapsed;
-        descriptionBox3.Visibility = Visibility.Collapsed;
-        switch (defaultProtectSelect1.SelectedIndex)
+        planProtect1.Visibility = Visibility.Collapsed;
+        planProtect2.Visibility = Visibility.Collapsed;
+        planProtect3.Visibility = Visibility.Collapsed;
+        switch (protectSelect.SelectedIndex)
         {
           case 0://None
             break;
           case 1://Delaying
-            descriptionBox3.Visibility = Visibility.Visible;
+            planProtect3.Visibility = Visibility.Visible;
             break;
           case 2://Password
-            descriptionBox1.Text = "";//Reset to prevent seeing
-            descriptionBox1.Visibility = Visibility.Visible;
+            planProtect1.Text = "";//Reset to prevent seeing
+            planProtect1.Visibility = Visibility.Visible;
             break;
           case 3://Random Characters
-            descriptionBox2.Visibility = Visibility.Visible;
+            planProtect2.Visibility = Visibility.Visible;
             break;
           case 4://Forced
             break;
@@ -623,50 +601,35 @@ namespace IA_GUI
     //Plan Page 2 (Apps/Whitelisting/Blacklist)
     public void showAppInformation()
     {
-      //int x = tempPlanCache.idPlan;
-      currentScreen = "planSettingsApp";
-      // Get Database Information
-      var planSettingFrame = (Grid)this.FindName($"plan_grid_2");
-      planSettingFrame.Visibility = Visibility.Visible;
+      currentScreen = "plan_grid_2";
 
-      // Get Database Information
-      var whitelistNameBox = (TextBox)this.FindName($"appNameAllowBox");
-      var blacklistNameBox = (TextBox)this.FindName($"appNameBlockBox");
-      var whitelistPathBox = (TextBox)this.FindName($"appPathAllowBox");
-      var blacklistPathBox = (TextBox)this.FindName($"appPathBlockBox");
-
-      var whitelistNameLabel = (Label)this.FindName($"appNameAllowLabel");
-      var blacklistNameLabel = (Label)this.FindName($"appNameBlockLabel");
-      var whitelistPathLabel = (Label)this.FindName($"appPathAllowLabel");
-      var blacklistPathLabel = (Label)this.FindName($"appPathBlockLabel");
-
-      var listingSelectBox = (ComboBox)this.FindName($"listingSelectBox");
-
-      //tempPlanCache
+      // Determine Visibility
       bool blockType = (tempPlanCache.blockMethod == 0) ? false : true; // false, means blacklist, true means whitelist
 
-      blacklistNameBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
-      blacklistPathBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
-      whitelistNameLabel.Visibility = Visibility.Visible;
-      whitelistPathLabel.Visibility = Visibility.Visible;
+      appNameBlockBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
+      appPathBlockBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
+      appNameAllowLabel.Visibility = Visibility.Visible;
+      appPathAllowLabel.Visibility = Visibility.Visible;
 
       if (!blockType)//Blacklisting
       {
         tempPlanCache.allowedNames = "";//Reset
         tempPlanCache.allowedPaths = "";
         listingSelectBox.SelectedIndex = 0;
-        whitelistNameBox.Visibility = Visibility.Collapsed;
-        whitelistPathBox.Visibility = Visibility.Collapsed;
-        whitelistNameLabel.Visibility = Visibility.Collapsed;
-        whitelistPathLabel.Visibility = Visibility.Collapsed;
+        appNameAllowBox.Visibility = Visibility.Collapsed;
+        appPathAllowBox.Visibility = Visibility.Collapsed;
+        appNameAllowLabel.Visibility = Visibility.Collapsed;
+        appPathAllowLabel.Visibility = Visibility.Collapsed;
+        chooseNameWhitelist.Visibility = Visibility.Collapsed;
       }
       else// Whitelisting
       {
         listingSelectBox.SelectedIndex = 1;
-        whitelistNameBox.Visibility = Visibility.Visible;
-        whitelistPathBox.Visibility = Visibility.Visible;
-        whitelistNameBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
-        whitelistPathBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
+        appNameAllowBox.Visibility = Visibility.Visible;
+        appPathAllowBox.Visibility = Visibility.Visible;
+        chooseNameWhitelist.Visibility = Visibility.Visible;
+        appNameAllowBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
+        appPathAllowBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
       }
 
       //Import/Export
@@ -679,52 +642,28 @@ namespace IA_GUI
     //Plan Page 3 (Timing)
     public void showTimingInformation()
     {
-      currentScreen = "planSettingsTime";
-      // Get Database Information
-      var planSettingFrame = (Grid)this.FindName($"plan_grid_3");
-      planSettingFrame.Visibility = Visibility.Visible;
+      currentScreen = "plan_grid_3";
 
       // Inputs
       string[] activeDays = tempPlanCache.activeDays.Split("|");
-
-      var timeSelectBox = (ComboBox)this.FindName($"timeSelect");
-      var scheduledTimeBox = (TextBox)this.FindName($"timeNormalBox");
-
-      //var timerBox = (TextBox)this.FindName($"timerBox");
-
-      var startTimePomo = (TextBox)this.FindName($"startTimePomoBox");
-      var smallBreakPomo = (TextBox)this.FindName($"smallBreakPomoBox");
-      var largeBreakPomo = (TextBox)this.FindName($"largeBreakPomoBox");
-      var pomoAmount = (TextBox)this.FindName($"pomoAmountBox");
-      var pomoDuration = (TextBox)this.FindName($"pomoDurationBox");
-
-      // Labels
-      //var timeSelectLabel = (Label)this.FindName($"timeSelectLabel");
-      var scheduledTimeLabel = (Label)this.FindName($"timeNormal");
-      var startTimePomoLabel = (Label)this.FindName($"startTimePomoLabel");
-      var smallBreakPomoLabel = (Label)this.FindName($"smallBreakPomoLabel");
-      var largeBreakPomoLabel = (Label)this.FindName($"largeBreakPomoLabel");
-      var pomoAmountLabel = (Label)this.FindName($"pomoAmountLabel");
-      var pomoDurationLabel = (Label)this.FindName($"pomoDurationLabel");
-
 
       //Show Timing Type
       //tempPlanCache.timingMethod = 0;
       //tempPlanCache.activeTime = "2200-2300|0000-2400|1121-2132";
       int timingType = tempPlanCache.timingMethod;
 
-      scheduledTimeBox.Visibility = Visibility.Collapsed;
+      timeNormalBox.Visibility = Visibility.Collapsed;
       //timerBox.Visibility = Visibility.Collapsed;
-      startTimePomo.Visibility = Visibility.Collapsed;
-      smallBreakPomo.Visibility = Visibility.Collapsed;
-      largeBreakPomo.Visibility = Visibility.Collapsed;
-      pomoAmount.Visibility = Visibility.Collapsed;
-      pomoDuration.Visibility = Visibility.Collapsed;
+      startTimePomoBox.Visibility = Visibility.Collapsed;
+      smallBreakPomoBox.Visibility = Visibility.Collapsed;
+      largeBreakPomoBox.Visibility = Visibility.Collapsed;
+      pomoAmountBox.Visibility = Visibility.Collapsed;
+      pomoDurationBox.Visibility = Visibility.Collapsed;
 
       startTimePomoLabel.Visibility = Visibility.Collapsed;
       //timeSelectLabel.Visibility = Visibility.Collapsed;
-      scheduledTimeLabel.Visibility = Visibility.Collapsed;
-      startTimePomo.Visibility = Visibility.Collapsed;
+      timeNormal.Visibility = Visibility.Collapsed;
+      startTimePomoBox.Visibility = Visibility.Collapsed;
       smallBreakPomoLabel.Visibility = Visibility.Collapsed;
       largeBreakPomoLabel.Visibility = Visibility.Collapsed;
       pomoAmountLabel.Visibility = Visibility.Collapsed;
@@ -733,37 +672,36 @@ namespace IA_GUI
       switch (timingType)
       {
         case 0: // Scheduled
-          timeSelectBox.SelectedIndex = 0;
-          scheduledTimeBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
-          scheduledTimeBox.Visibility = Visibility.Visible;
-          scheduledTimeLabel.Visibility = Visibility.Visible;
+          timeSelect.SelectedIndex = 0;
+          timeNormalBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
+          timeNormalBox.Visibility = Visibility.Visible;
+          timeNormal.Visibility = Visibility.Visible;
           break;
         case 1: //Pomodoro
-          timeSelectBox.SelectedIndex = 1;
-          startTimePomo.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
-          smallBreakPomo.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
-          largeBreakPomo.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
-          pomoAmount.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
-          pomoDuration.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
-          startTimePomo.Visibility = Visibility.Visible;
-          smallBreakPomo.Visibility = Visibility.Visible;
-          largeBreakPomo.Visibility = Visibility.Visible;
-          pomoAmount.Visibility = Visibility.Visible;
-          pomoDuration.Visibility = Visibility.Visible;
+          timeSelect.SelectedIndex = 1;
+          startTimePomoBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
+          smallBreakPomoBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
+          largeBreakPomoBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
+          pomoAmountBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
+          pomoDurationBox.GetBindingExpression(TextBox.TextProperty).UpdateTarget();
+          startTimePomoBox.Visibility = Visibility.Visible;
+          smallBreakPomoBox.Visibility = Visibility.Visible;
+          largeBreakPomoBox.Visibility = Visibility.Visible;
+          pomoAmountBox.Visibility = Visibility.Visible;
+          pomoDurationBox.Visibility = Visibility.Visible;
 
           startTimePomoLabel.Visibility = Visibility.Visible;
-          startTimePomo.Visibility = Visibility.Visible;
           smallBreakPomoLabel.Visibility = Visibility.Visible;
           largeBreakPomoLabel.Visibility = Visibility.Visible;
           pomoAmountLabel.Visibility = Visibility.Visible;
           pomoDurationLabel.Visibility = Visibility.Visible;
           break;
         case 2:// Timer, not used
-          timeSelectBox.SelectedIndex = 2;
+          timeSelect.SelectedIndex = 2;
           //timerBox.Text = tempPlanCache.activeTime;
           break;
         default:
-          timeSelectBox.SelectedIndex = 0;
+          timeSelect.SelectedIndex = 0;
           break;
       }
       // Show Days Active
@@ -773,10 +711,10 @@ namespace IA_GUI
         cCheck.IsChecked = true;
       }
 
-      var activeLabel1 = (Button)this.FindName($"backButtonPlanPage3");
-      activeLabel1.Visibility = Visibility.Visible;
-      var activeLabel4 = (Button)this.FindName($"nextButtonPlanPage3");
-      activeLabel4.Visibility = Visibility.Visible;
+      // Show navigation buttons
+      backButtonPlanPage3.Visibility = Visibility.Visible;
+      nextButtonPlanPage3.Visibility = Visibility.Visible;
+
       //Import/Export
       //var activeLabel2 = (Button)this.FindName($"importPlanButton");
       //activeLabel2.Visibility = Visibility.Visible;
@@ -819,9 +757,7 @@ namespace IA_GUI
       // Various displays
       if (canAccessSettings)// Access Permitted
       {
-        currentScreen = "settingsMain";
-        var settingFrame = (Grid)this.FindName($"settings_grid");
-        settingFrame.Visibility = Visibility.Visible;
+        currentScreen = "settings_grid";
 
         List<int> invisibleAttributes = new List<int>();
         int numSettings = 1;
@@ -923,9 +859,7 @@ namespace IA_GUI
       // Various displays
       if (canAccessSettings)
       {
-        currentScreen = "statsMain";
-        var statFrame = (Grid)this.FindName($"stats_grid");
-        statFrame.Visibility = Visibility.Visible;
+        currentScreen = "stats_grid";
         var timePeriodSelect = (ComboBoxItem)this.FindName($"timeChoice1");//Select Default
         timePeriodSelect.IsSelected = true;
 
@@ -1105,14 +1039,14 @@ namespace IA_GUI
       }
     }
 
-    // Delete Command
+    // Delete Command (From user protection)
     public void deletePlan()
     {
       BackEnd.deleteEntryPlans(tempPlanCache.idPlan);
       showAllPlans();//Reload
     }
 
-    // Stop Command
+    // Stop Command (From user protection)
     public void stopPlan()
     {
       tempPlanCache.currentlyActive = 0;
@@ -1120,11 +1054,15 @@ namespace IA_GUI
       showAllPlans();//Reload
     }
 
-    // Edit Command
+    // Edit Command (From user protection)
     public void editPlan()
     {
-      var planFrame = (Grid)this.FindName($"plan_grid");
-      planFrame.Visibility = Visibility.Collapsed;
+      // Transition to screen
+      switch (currentScreen)
+      {
+        default:
+          transitionScreenFade(currentScreen, "plan_grid_1"); break;
+      }
       showBasicPlanInformation(true);
     }
 
@@ -1224,6 +1162,7 @@ namespace IA_GUI
     ///
 
 
+    // Asks for user protection, always called before loading in first plan screen when editing
     public void promptUserProtection(object sender, RoutedEventArgs e)
     {
       List<PlanInformation> planData = BackEnd.parsePlans();
@@ -1277,9 +1216,9 @@ namespace IA_GUI
         {
           case 0: //No protection (Direct Access, See above if statement)
             break;
-          case 2:
-          case 3: //Password and Random Characters
-                  // Special case with pausing
+          case 2: case 3: //Password and Random Characters
+            
+            // Special case with pausing
             if ((tempPlanCache.returnPausingAllowed) && (finalDirective == "planStop"))
             {
               transitionToStop(sender, e);
@@ -1288,18 +1227,18 @@ namespace IA_GUI
             var inputInstruction = (Label)this.FindName($"TLabel");
             var userInput = (PasswordBox)this.FindName($"PasswordInput");
             userInput.Clear(); // Clear previous password
-            var planFrame = (Grid)this.FindName($"password_grid");
-            planFrame.Visibility = Visibility.Visible;
-            var origScreen = (Grid)this.FindName($"plan_grid");
-            origScreen.Visibility = Visibility.Collapsed;
 
+            // Transition Screens
+            transitionScreenFade("all_plans_grid", "password_grid");
+            currentScreen = "password_grid";
+
+            // Password Case
             if (tempPlanCache.protectionActiveType == 2)
             {
               inputInstruction.Content = "Please Enter the Password for This Set:\n";
             }
-            else
+            else // Generate random string
             {
-              // Generate random string
               string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";// Set of all characters
               randomChars = new string(Enumerable.Repeat(chars, tempPlanCache.protectionActiveChar).Select(s => s[random.Next(s.Length)]).ToArray());
               inputInstruction.Content = "Please Enter the Following Characters:\n" + randomChars;
@@ -1320,18 +1259,16 @@ namespace IA_GUI
             break;
           case 1:
           case 4: // Total Block and Delay
-                  // Special case with pausing
+            // Special case with pausing
             if ((tempPlanCache.returnPausingAllowed) && (finalDirective == "planStop"))
             {
               transitionToStop(sender, e);
               break;
             }
-            var origScreen1 = (Grid)this.FindName($"plan_grid");
-            origScreen1.Visibility = Visibility.Collapsed;
-            var tBlockScreen = (Grid)this.FindName($"blocked_grid");
-            tBlockScreen.Visibility = Visibility.Visible;
-            var labelInstruction = (Label)this.FindName($"BlockLabel");
-            labelInstruction.Content = "You cannot perform this action until\n         this plan becomes inactive\n                    or disabled";
+            // Transition Screen
+            transitionScreenFade("all_plans_grid", "blocked_grid");
+            currentScreen = "blocked_grid";
+            BlockLabel.Content = "You cannot perform this action until\n         this plan becomes inactive\n                    or disabled";
             break;
           default:
             break;
