@@ -39,9 +39,10 @@
       // 
       // aiservice
       // 
-      this.aiservice.Description = "Service for IdealApp";
-      this.aiservice.DisplayName = "AppIdealService";
-      this.aiservice.ServiceName = "ServList";
+      this.aiservice.Description = "Maintains basic functionality of IdealApp in conjunction with primary/secondary p" +
+    "rocesses";
+      this.aiservice.DisplayName = "IdealApp Enforcer";
+      this.aiservice.ServiceName = "IdealAppService";
       this.aiservice.AfterInstall += new System.Configuration.Install.InstallEventHandler(this.serviceInstaller1_AfterInstall);
       // 
       // ProjectInstaller

@@ -1,0 +1,71 @@
+
+// Database Structure
+
+/* stats.db (Statistics)
+// Description of Columns (UserStatistics Table)
+
+// idApp: Unique ID for each application
+// processName: Name of the process (eg. firefox.exe)
+// processPath: Path of the process (eg. C:\Program Files\Mozilla Firefox\firefox.exe)
+// processCDay: Current time spent on the process (seconds)
+// processPastTimes: Past times spent on the process (eg. 900|1500|232|etc.) (seconds)
+*/
+
+/* plans.db (User Configuration)
+
+// Be sure to start front with lower case
+
+// General Information
+PlanName
+BlockMethod   (0 for blacklist, 1 for whitelist)
+PlanDescription 
+Kill   
+Firewall
+
+// Content 
+
+BlockedPaths  eg. (C:\Program Files\AMD\|C:\Program Files\Google\|C:\Program Files\Internet Explorer\) split on |
+BlockedNames 
+AllowedPaths  eg. (C:\Program Files\|C:\Program Files(x86)\| C:\Windows\) split on |
+AllowedNames
+
+// Protection
+
+ProtectionActiveType (Types are as following: 0 (None), 1 (Password), 2 (Random Characters), 3 (Completely Blocked))
+ProtectionActivePwd (Hash of password)
+ProtectionActiveChar (Number of Random Input)
+ProtectionActiveAddAllow (TBD)
+ProtectionInactiveType (Same as protectionactivetype)
+ProtectionInactivePwd (Hash of password)    
+ProtectionInactiveChar (Number of Random Input) 
+ProtectionInactiveAddAllow (TBD)
+
+// Timing
+
+TimingMethod  (0 or 1, 0 for standard time, 1 for pomodoro)
+ActiveDays   (Days where plan is active) delimited by |    eg. 1|2|3|4|5|6|7 
+ActiveTime   (Active Times) delimited by |    eg. 0000-2400
+PomoAmount   (Pomodoro Cycles) (any integer)
+PomoDuration (in minutes)
+PomoSetAmount  (number of sets per round)
+PomoSmallBreak   (time between sets)
+PomoLargeBreak   (time between rounds)
+PomoScheduledStart   (starting times) follows as    0000|1600|etc.
+*/
+
+/* root.db (General Application Configuration)
+// Description of Columns (AppData Table)
+
+// currentVersion (eg 1.0.0)
+// lastUpdate  (eg. 8-24-2022)
+// protectionEnabled (bool, FBD)
+// directoryProtection (bool, FBD)
+// dateTimeEnabled = false (bool, FBD)
+// showNotification = false (bool, FBD)
+// showTimer = false (bool, FBD)
+// uninstallProtection (bool, FBD)
+// disableTaskmgr = true (bool, FBD)
+// disableTaskkill (TBD) 
+// masterPassword (hash of password)
+*/
+
