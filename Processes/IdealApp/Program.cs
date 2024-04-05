@@ -230,6 +230,13 @@ namespace Primary
     public DateTime datetime { get; set;  } // Do not change this name
   }
 
+  public class NamePathInformation
+  {
+    public NamePathInformation() { }
+    public String processPath { get; set; } 
+    public String processName { get; set; }
+  }
+
   /// 
   /// API Methods
   /// 
@@ -433,6 +440,28 @@ namespace Primary
       }
     }
 
+    private List<NamePathInformation> parseNamePathCache(String matchProcessName)
+    {
+      try
+      {
+        using (var connection = new SQLiteConnection($"Data Source={rootDirectory}cache.db")) //StatRead does not work
+        {
+          connection.Open();
+          using (var command = new SQLiteCommand("PRAGMA temp_store = MEMORY;", connection))
+          {
+            command.ExecuteNonQuery();
+          }
+          var output = connection.Query<NamePathInformation>($"SELECT * FROM UserStatistics WHERE processName = {matchProcessName}", new DynamicParameters()).ToList();
+          return output;
+        }
+      }
+      catch (Exception ex)
+      {
+        return null;
+      }
+    }
+    // If multiple processes with the same name and a different path, then kill all processes outside of Program Files/Program Files (x86)/Windows
+
     /// 
     /// Primary Methods
     /// 
@@ -530,7 +559,10 @@ namespace Primary
         string processName;
         try
         {
-          windowTitle = process.MainWindowTitle; 
+          windowTitle = process.MainWindowTitle;
+          processName = process.ProcessName;
+          //findAppPath()
+
           if ((String.IsNullOrEmpty(windowTitle))) { continue; } // && (appPath.Substring(0, 11).Equals(@"c:\windows\"))
           if (process.ProcessName.Equals("ApplicationFrameHost"))
           {
@@ -541,7 +573,6 @@ namespace Primary
           else
           {
             appPath = process.MainModule.FileName.ToLower(); // Major CPU Eater
-            processName = process.ProcessName;
             _realProcess = process;
           }
         }
